@@ -47,4 +47,9 @@ The built site is committed to a subdirectory on the 16n site, for now.
 
 ## Icons
 
-Icons are from FontAwesome: https://fontawesome.com/icons?d=gallery&m=free .
+Icons are from [FontAwesome](https://fontawesome.com/license/free). FA Code is MIT licensed; font files are licensed under the SIL Open Font License.
+
+## Licensing
+
+Editor code, like the rest of 16n sourcecode, is released under the MIT License; see `LICENSE` for more details.
+
