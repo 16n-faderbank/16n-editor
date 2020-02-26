@@ -19,6 +19,10 @@
     width: 600px;
     line-height: 1.2;
   }
+
+  p.note.small {
+    font-size: 85%;
+  }
 </style>
 
 
@@ -37,15 +41,16 @@
 </CheckOption>
 
 {#if $configuration.device().capabilities.i2c}
-<h3>I2C Master/Follower</h3>
+<h3>I2C Leader/Follower</h3>
 <select bind:value={$editConfiguration.i2cMaster} on:change={touchControl}>
   <option value={false}>Follower</option>
-  <option value={true}>Master</option>
+  <option value={true}>Leader</option>
 </select>
 
 <p class='note'><strong>Follower</strong> mode is for use with Teletype.</p>
-<p class='note'><strong>Master</strong> mode is for use with Ansible, TXi, ER-301. 16n will not respond to Teletype when in master mode.</p>
+<p class='note'><strong>Leader</strong> mode is for use with Ansible, TXi, ER-301. 16n will not respond to Teletype when in leader mode.</p>
 <p class='note'>This will not take effect until you restart (disconnect/reconnect) your 16n.</p>
+<p class='note small'>("Leader" is sometimes also referred to as 'master' mode)</p>
 
 <h3>Fader Minimum/Maximum scalars</h3>
 <div>
