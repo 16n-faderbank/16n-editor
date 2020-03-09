@@ -17,12 +17,12 @@
   import CheckOption from "./components/CheckOption.svelte";
   import Control from "./components/Control.svelte";
   import DebugConsole from "./components/DebugConsole.svelte";
+  import DeviceOptions from "./components/DeviceOptions.svelte";
   import EditControl from "./components/EditControl.svelte";
   import Icon from "./components/Icon.svelte";
   import MidiContext from "./components/MidiContext.svelte";
   import MidiEnabled from "./components/MidiEnabled.svelte";
   import MidiSelector from "./components/MidiSelector.svelte";
-  import OtherOptions from "./components/OtherOptions.svelte";
   import Subhead from "./components/Subhead.svelte";
   import { Tabs, TabList, TabPanel, Tab } from './components/tabs';
 
@@ -142,7 +142,7 @@
             <TabList>
               <Tab>USB</Tab> 
               <Tab>TRS Jack</Tab> 
-              <Tab>Other Options</Tab> 
+              <Tab>Device Options</Tab> 
             </TabList>
 
             <TabPanel>
@@ -166,7 +166,7 @@
             </TabPanel>
 
             <TabPanel>
-              <OtherOptions />
+              <DeviceOptions />
             </TabPanel>
           </Tabs>
 
