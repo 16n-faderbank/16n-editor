@@ -15,13 +15,13 @@ export class ConfigurationObject {
     this.ledOn = ledOn;
     this.ledFlash = ledFlash;
     this.controllerFlip = controllerFlip;
-    this.usbControls = usbControls;
-    this.trsControls = trsControls;
     this.deviceId = deviceId;
     this.firmwareVersion = firmwareVersion;
     this.i2cMaster = i2cMaster;
     this.fadermin = fadermin;
     this.fadermax = fadermax;
+    this.usbControls = usbControls;
+    this.trsControls = trsControls;
   }
 
   isEquivalent(otherConfig) {

@@ -16,6 +16,8 @@
 		border-radius: 0;
 		margin: 0;
 		color: #aaa;
+    padding-left: 6px;
+    padding-right: 6px;
 	}
 	
 	.selected {
@@ -26,6 +28,8 @@
     border-bottom: 1px solid #f0f0f0;
     border-radius: 2px;
 		color: #333;
+    padding-left: 5px;
+    padding-right: 5px;
   }
   
   button:hover {

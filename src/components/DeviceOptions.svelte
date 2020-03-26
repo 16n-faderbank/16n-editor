@@ -23,6 +23,9 @@
   p.note.small {
     font-size: 85%;
   }
+  label {
+    font-weight: bold;
+  }
 </style>
 
 
