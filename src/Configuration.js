@@ -98,6 +98,25 @@ export class ConfigurationObject {
     return array;
   }
 
+  toDeviceOptionsSysexArray() {
+    const fullArray = this.toSysexArray();
+    return fullArray.slice(4,20);
+  }
+
+  toUSBOptionsSysexArray() {
+    const fullArray = this.toSysexArray();
+    const channels = fullArray.slice(20,36);
+    const ccs = fullArray.slice(52,68);
+    return channels.concat(ccs);
+  }
+
+  toTRSOptionsSysexArray() {
+    const fullArray = this.toSysexArray();
+    const channels = fullArray.slice(36,52);
+    const ccs = fullArray.slice(68,84);
+    return channels.concat(ccs);
+  }
+
   toJsonString() {
     let o = ConfigurationObject.clone(this);
     // truncate all controllers to length $length;

@@ -41,7 +41,17 @@ export class OxionMidi {
   }
 
   static sendShortConfiguration(configuration, output) {
+    output.sendSysex(OxionMidi.sysexMfgId, [
+      OxionMidi.updateDeviceOptionsMsg
+    ].concat(configuration.toDeviceOptionsSysexArray()));
 
+    output.sendSysex(OxionMidi.sysexMfgId, [
+      OxionMidi.updateUSBOptionsMessage
+    ].concat(configuration.toUSBOptionsSysexArray()));
+
+    output.sendSysex(OxionMidi.sysexMfgId, [
+      OxionMidi.updateTRSOptionsMessage
+    ].concat(configuration.toTRSOptionsSysexArray()));
   }
 
   static requestConfig(output) {
@@ -55,3 +65,6 @@ export class OxionMidi {
 OxionMidi.sysexMfgId = [0x7d, 0x00, 0x00];
 OxionMidi.requestInfoMsg = 0x1F;
 OxionMidi.updateConfigMsg = 0x0E;
+OxionMidi.updateDeviceOptionsMsg = 0x0D;
+OxionMidi.updateUSBOptionsMessage = 0x0C;
+OxionMidi.updateTRSOptionsMessage = 0x0B;
