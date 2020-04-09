@@ -70,7 +70,6 @@ export class ConfigurationObject {
     array[5] = this.ledFlash ? 1 : 0;
     array[6] = this.controllerFlip ? 1 : 0;
 
-    // TODO: check all this i2c stuff
     array[7] = this.i2cMaster
 
     let faderminMSB = this.fadermin >> 7 
@@ -263,6 +262,7 @@ ConfigurationObject.devices = [
     capabilities: {
       i2c: true,
       led: true
-    }
+    },
+    sendShortMessages: true
   }
 ];

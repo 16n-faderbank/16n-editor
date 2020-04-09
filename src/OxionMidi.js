@@ -26,10 +26,22 @@ export class OxionMidi {
     return WebMidi.outputs.sort(OxionMidi.sortMidiInterfaces);
   }
 
-  static sendConfig(sysexArray, output) {
+  static sendConfiguration(configuration, output) {
+    if(configuration.device().sendShortMessages) {
+      this.sendShortConfiguration(configuration, output);
+    } else {
+      this.sendFullConfiguration(configuration, output);
+    }
+  }
+
+  static sendFullConfiguration(configuration,output) {
     output.sendSysex(OxionMidi.sysexMfgId, [
       OxionMidi.updateConfigMsg
-    ].concat(sysexArray));
+    ].concat(configuration.toSysexArray()));
+  }
+
+  static sendShortConfiguration(configuration, output) {
+
   }
 
   static requestConfig(output) {

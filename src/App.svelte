@@ -71,7 +71,7 @@
     let sysexArray = $editConfiguration.toSysexArray();
     logger("Sending sysex:", sysexArray);
 
-    OxionMidi.sendConfig(sysexArray, $selectedMidiOutput);
+    OxionMidi.sendConfiguration($editConfiguration, $selectedMidiOutput);
 
     $configuration = $editConfiguration;
 
