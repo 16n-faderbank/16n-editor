@@ -71,7 +71,7 @@
     let sysexArray = $editConfiguration.toSysexArray();
     logger("Sending sysex:", sysexArray);
 
-    OxionMidi.sendConfig(sysexArray, $selectedMidiOutput);
+    OxionMidi.sendConfiguration($editConfiguration, $selectedMidiOutput);
 
     $configuration = $editConfiguration;
 
@@ -111,6 +111,12 @@
     margin: 0 auto;
     min-width: calc(16*75px);
     /* background: #fff; */
+  }
+
+  #foot {
+    font-size: 80%;
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
   }
 
 </style>
@@ -208,6 +214,7 @@
         <p>Connect a controller via USB.</p>
       {/if}
     </MidiEnabled>
+    <div id="foot">16n Editor v{"__buildversion__"}</div>
   </main>
 
 </MidiContext>

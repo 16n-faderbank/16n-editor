@@ -70,7 +70,6 @@ export class ConfigurationObject {
     array[5] = this.ledFlash ? 1 : 0;
     array[6] = this.controllerFlip ? 1 : 0;
 
-    // TODO: check all this i2c stuff
     array[7] = this.i2cMaster
 
     let faderminMSB = this.fadermin >> 7 
@@ -97,6 +96,25 @@ export class ConfigurationObject {
     });
 
     return array;
+  }
+
+  toDeviceOptionsSysexArray() {
+    const fullArray = this.toSysexArray();
+    return fullArray.slice(4,20);
+  }
+
+  toUSBOptionsSysexArray() {
+    const fullArray = this.toSysexArray();
+    const channels = fullArray.slice(20,36);
+    const ccs = fullArray.slice(52,68);
+    return channels.concat(ccs);
+  }
+
+  toTRSOptionsSysexArray() {
+    const fullArray = this.toSysexArray();
+    const channels = fullArray.slice(36,52);
+    const ccs = fullArray.slice(68,84);
+    return channels.concat(ccs);
   }
 
   toJsonString() {
@@ -256,5 +274,14 @@ ConfigurationObject.devices = [
       i2c: true,
       led: true
     }
+  },
+  {
+    name: "16n (LC)",
+    controlCount: 16,
+    capabilities: {
+      i2c: true,
+      led: true
+    },
+    sendShortMessages: true
   }
 ];
