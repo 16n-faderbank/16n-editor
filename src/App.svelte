@@ -113,6 +113,12 @@
     /* background: #fff; */
   }
 
+  #foot {
+    font-size: 80%;
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
+  }
+
 </style>
 
 <MidiContext>
@@ -208,6 +214,7 @@
         <p>Connect a controller via USB.</p>
       {/if}
     </MidiEnabled>
+    <div id="foot">16n Editor v{"__buildversion__"}</div>
   </main>
 
 </MidiContext>
