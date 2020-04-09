@@ -256,5 +256,13 @@ ConfigurationObject.devices = [
       i2c: true,
       led: true
     }
+  },
+  {
+    name: "16n (LC)",
+    controlCount: 16,
+    capabilities: {
+      i2c: true,
+      led: true
+    }
   }
 ];
