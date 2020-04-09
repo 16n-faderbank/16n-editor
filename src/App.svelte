@@ -163,7 +163,7 @@
               {/if}
             </p>
           {:else}
-            <p class='device'>No device conncected.</p>
+            <p class='device'>No device connected.</p>
           {/if}
         </div>
       </MidiEnabled>
