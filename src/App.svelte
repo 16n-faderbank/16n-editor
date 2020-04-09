@@ -1,5 +1,6 @@
 <script>
   import { setContext } from 'svelte'
+  import cmp from 'semver-compare';
   import { ConfigurationObject } from "./Configuration.js";
   import { ImportExport } from "./ImportExport.js";
   import { logger } from "./logger.js";
@@ -30,12 +31,25 @@
 
   let editMode = false;
   let configDirty = false;
+  let upgradeString = "";
 
   editConfiguration.subscribe(c => {
     if (c && $configuration) {
       configDirty = !c.isEquivalent($configuration);
     }
   });
+
+  configuration.subscribe(c => {
+    if (c && c.firmwareVersion && window.latestVersion && !window.versionCompared) {
+      let delta = cmp(window.latestVersion,c.firmwareVersion);
+      window.versionCompared = true;
+      if(delta > 0) {
+        upgradeString = `A new version of the 16n firmware (${window.latestVersion}) is available.`;
+      } else {
+        upgradeString = "";
+      }
+    }
+  })
 
   function handleMessage(message) {
     switch (message.detail.name) {
@@ -78,6 +92,11 @@
     editMode = !editMode;
   }
 
+  fetch("https://api.github.com/repos/16n-faderbank/16n/releases")
+    .then(r => r.json())
+    .then(d => {
+      window.latestVersion = d[0].tag_name.replace(/[a-zA-z]/g, "");
+    });
 </script>
 
 <style>
@@ -119,6 +138,11 @@
     padding-top: 5px;
   }
 
+ span.upgrade {
+   display: block;
+   margin-top: 5px;
+   color: #888;
+ } 
 </style>
 
 <MidiContext>
@@ -129,7 +153,15 @@
         <div class="details">
           <!-- <MidiSelector /> -->
           {#if $configuration}
-            <p class='device'>Connected: <strong>{$configuration.device().name}</strong> running firmware <strong>{$configuration.firmwareVersion}</strong></p>
+            <p class='device'>
+              Connected: <strong>{$configuration.device().name}</strong> running firmware <strong>{$configuration.firmwareVersion}</strong>
+              {#if upgradeString.trim() != ""}
+              <span class='upgrade'>
+                {upgradeString}
+                <a href="https://github.com/16n-faderbank/16n/releases">Download</a>
+              </span>
+              {/if}
+            </p>
           {:else}
             <p class='device'>No device conncected.</p>
           {/if}
