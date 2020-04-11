@@ -10,5 +10,5 @@
 {#if $webMidiEnabled}
   <slot></slot>
 {:else if fallback}
-  {fallback}
+  <p>{fallback}</p>
 {/if}
