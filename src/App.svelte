@@ -11,7 +11,8 @@
     editConfiguration,
     selectedMidiInput,
     selectedMidiOutput,
-    webMidiEnabled
+    webMidiEnabled,
+    controllerMightNeedFactoryReset
   } from "./stores.js";
 
   import Button from "./components/Button.svelte";
@@ -68,6 +69,9 @@
       case "exportConfig":
         ImportExport.export($configuration);
         break;
+      case "transmitFactoryReset":
+        transmitFactoryReset();
+        break;
       default:
         break;
     }
@@ -92,11 +96,23 @@
     editMode = !editMode;
   }
 
+  function transmitFactoryReset() {
+    logger("Sending factory reset request");
+    OxionMidi.sendFactoryResetRequest($selectedMidiOutput);
+  }
+
+  function confirmTransmitFactoryReset() {
+    if (window.confirm("Do you really want to factory-reset any attached 16n's EEPROM?")) {
+      alert("Reset")
+      transmitFactoryReset();
+    }
+  }
+
   fetch("https://api.github.com/repos/16n-faderbank/16n/releases")
     .then(r => r.json())
     .then(d => {
       window.latestVersion = d[0].tag_name.replace(/[a-zA-z]/g, "");
-    });
+    }).catch(e => logger(e));
 </script>
 
 <style>
@@ -136,6 +152,16 @@
     font-size: 80%;
     border-top: 1px solid #ccc;
     padding-top: 5px;
+    display: flex;
+  }
+
+  .foot-left {
+    flex: 1;
+  }
+
+  .foot-right {
+    flex: 1;
+    text-align: right;
   }
 
  span.upgrade {
@@ -243,10 +269,19 @@
         {/if}
         <p />
       {:else}
-        <p>Connect a controller via USB.</p>
+        {#if $controllerMightNeedFactoryReset}
+          <p>It looks like a 16n is trying to connect, but may have a corrupt memory.</p>
+          <Button label="Click to reset your 16n's EEPROM to factory defaults" clickMessageName="transmitFactoryReset" on:message={handleMessage}></Button>
+        {:else}
+          <p>Connect a controller via USB.</p>
+        {/if}
       {/if}
     </MidiEnabled>
-    <div id="foot">16n Editor v{"__buildversion__"}</div>
+    <div id="foot">
+      <div class='foot-left'>
+        16n Editor v{"__buildversion__"}
+      </div>
+    </div>
   </main>
 
 </MidiContext>

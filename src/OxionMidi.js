@@ -60,6 +60,12 @@ export class OxionMidi {
     ]);
   }
 
+  static sendFactoryResetRequest(output) {
+    output.sendSysex(OxionMidi.sysexMfgId, [
+      OxionMidi.factoryResetMsg
+    ]);
+  }
+
 }
 
 OxionMidi.sysexMfgId = [0x7d, 0x00, 0x00];
@@ -68,3 +74,4 @@ OxionMidi.updateConfigMsg = 0x0E;
 OxionMidi.updateDeviceOptionsMsg = 0x0D;
 OxionMidi.updateUSBOptionsMessage = 0x0C;
 OxionMidi.updateTRSOptionsMessage = 0x0B;
+OxionMidi.factoryResetMsg = 0x1A; // 1ntiAlize
