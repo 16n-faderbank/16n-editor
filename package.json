@@ -1,6 +1,6 @@
 {
   "name": "16n-editor",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
