@@ -43,6 +43,10 @@
   Rotate controller 180º
 </CheckOption>
 
+<CheckOption bind:checked={$editConfiguration.midiThru}>
+  Soft MIDI thru (echo MIDI clock/note data sent to USB out of the minijack)
+</CheckOption>
+
 <hr/>
 
 <h3>Fader Minimum/Maximum calibration</h3>
