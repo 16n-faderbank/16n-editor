@@ -55,20 +55,22 @@
 
 <h3>Fader Minimum/Maximum calibration</h3>
 <div>
-  <label>Fader Minimum raw value</label>
+  <label for="fadermin">Fader Minimum raw value</label>
   <input
+    name="fadermin"
     type="number"
     bind:value={$editConfiguration.fadermin}
-    on:change={touchControl}
+    on:blur={touchControl}
     min="0"
     max="{(1 << 13) - 1}" />
 </div>
 <div>
-  <label>Fader Maximum raw value</label>
+  <label for="fadermax">Fader Maximum raw value</label>
   <input
+    name="fadermax"
     type="number"
     bind:value={$editConfiguration.fadermax}
-    on:change={touchControl}
+    on:blur={touchControl}
     min="0"
     max="{(1 << 13) - 1}" />
 </div>
