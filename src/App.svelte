@@ -1,6 +1,6 @@
 <script>
   import { setContext } from 'svelte'
-  import cmp from 'semver-compare';
+  import { gt as semverGt } from 'semver';
   import { ConfigurationObject } from "./Configuration.js";
   import { ImportExport } from "./ImportExport.js";
   import { logger } from "./logger.js";
@@ -42,9 +42,8 @@
 
   configuration.subscribe(c => {
     if (c && c.firmwareVersion && window.latestVersion && !window.versionCompared) {
-      let delta = cmp(window.latestVersion,c.firmwareVersion);
       window.versionCompared = true;
-      if(delta > 0) {
+      if(semverGt(window.latestVersion, c.firmwareVersion)) {
         upgradeString = `A new version of the 16n firmware (${window.latestVersion}) is available.`;
       } else {
         upgradeString = "";

@@ -2,6 +2,8 @@
 <script>
   import { logger } from "../logger.js";
 
+  import { gte as semverGte } from 'semver';
+
   import {
     configuration,
     editConfiguration,
@@ -43,9 +45,11 @@
   Rotate controller 180º
 </CheckOption>
 
+{#if semverGte($configuration.firmwareVersion, "2.1.0")}
 <CheckOption bind:checked={$editConfiguration.midiThru}>
   Soft MIDI thru (echo MIDI clock/note data sent to USB out of the minijack)
 </CheckOption>
+{/if}
 
 <hr/>
 
