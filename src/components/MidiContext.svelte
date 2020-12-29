@@ -4,6 +4,7 @@
   import { ConfigurationObject } from "../Configuration.js";
   import { logger } from "../logger.js";
   import { OxionMidi } from "../OxionMidi.js";
+  import { controllerMightNeedFactoryReset } from "../stores.js"
 
   import {
     configuration,
@@ -14,6 +15,8 @@
     selectedMidiOutput,
     webMidiEnabled
   } from "../stores.js";
+
+  let configTimeout = -1;
 
   WebMidi.enable(function(err) {
     if (err) {
@@ -149,6 +152,8 @@
           ConfigurationObject.returnConfigHashFromSysex(data)
         );
         logger("Received config", $configuration);
+        configTimeout = -1;
+        $controllerMightNeedFactoryReset = false;
         if (document.getElementById("current_config")) {
           document.getElementById("current_config").value = configBytes.join(
             " "
@@ -160,6 +165,16 @@
   }
 
   function requestConfig() {
+    if(configTimeout < 0) {
+      configTimeout = Date.now();
+    }
+
+    if((Date.now() - configTimeout) > 8000) {
+      if(!$controllerMightNeedFactoryReset) {
+        $controllerMightNeedFactoryReset = true;
+      }
+    }
+
     if ($selectedMidiInput && $selectedMidiOutput) {
       logger("Requesting config over " + $selectedMidiOutput.name);
       logger("Hoping to receive on " + $selectedMidiInput.name);

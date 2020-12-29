@@ -4,6 +4,7 @@ export class ConfigurationObject {
   constructor({ ledOn = true,
     ledFlash = true,
     controllerFlip = false,
+    midiThru = false,
     deviceId = 0,
     i2cMaster = false,
     fadermin = 0,
@@ -15,6 +16,7 @@ export class ConfigurationObject {
     this.ledOn = ledOn;
     this.ledFlash = ledFlash;
     this.controllerFlip = controllerFlip;
+    this.midiThru = midiThru;
     this.deviceId = deviceId;
     this.firmwareVersion = firmwareVersion;
     this.i2cMaster = i2cMaster;
@@ -27,7 +29,9 @@ export class ConfigurationObject {
   isEquivalent(otherConfig) {
     let optionEquivalents = (this.ledOn == otherConfig.ledOn &&
       this.ledFlash == otherConfig.ledFlash &&
-      this.controllerFlip == otherConfig.controllerFlip);
+      this.controllerFlip == otherConfig.controllerFlip &&
+      this.midiThru == otherConfig.midiThru
+    );
     
     if(("i2cMaster" in this) || ("i2cMaster" in otherConfig)) {
       optionEquivalents = optionEquivalents && (this.i2cMaster == otherConfig.i2cMaster);
@@ -80,6 +84,7 @@ export class ConfigurationObject {
     let fadermaxLSB = this.fadermax - (fadermaxMSB << 7);
     array[10] = fadermaxLSB
     array[11] = fadermaxMSB
+    array[12] = this.midiThru ? 1 : 0;
 
     let usbChannelOffset = 20;
     let trsChannelOffset = 36;
@@ -164,6 +169,7 @@ export class ConfigurationObject {
       ledOn: obj.ledOn,
       ledFlash: obj.ledFlash,
       controllerFlip: obj.controllerFlip,
+      midiThru: obj.midiThru,
       usbControls: [],
       trsControls: [],
       deviceId: obj.deviceId,
@@ -182,8 +188,6 @@ export class ConfigurationObject {
 
     return newObj
   }
-
-  
 
   static returnConfigHashFromSysex(data) {
     logger("Generating config from", data);
@@ -205,6 +209,8 @@ export class ConfigurationObject {
     let fadermaxLSB = data[7+offset];
     let fadermaxMSB = data[8+offset]
     let fadermax = (fadermaxMSB << 7) + fadermaxLSB;
+
+    let midiThru = data[9+offset];
 
     let usbControls = [];
     let trsControls = [];
@@ -243,6 +249,7 @@ export class ConfigurationObject {
       ledOn,
       ledFlash,
       controllerFlip,
+      midiThru,
       usbControls,
       trsControls,
       deviceId,

@@ -7,3 +7,4 @@ export const midiOutputs = writable([]);
 export const selectedMidiInput = writable(null);
 export const selectedMidiOutput = writable(null);
 export const webMidiEnabled = writable(null);
+export const controllerMightNeedFactoryReset = writable(false)
