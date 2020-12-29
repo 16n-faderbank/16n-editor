@@ -1,12 +1,12 @@
 # 16n editor
 
-The 16n editor allows you to edit the configuration of your 16n from within a web browser. It works with 16ns running firmware **2.0.0** and up.
+The 16n editor allows you to edit the configuration of your 16n from within a web browser. It supports 16ns running firmware **2.0.0** and up.
 
 The 16n editor is a Javascript app based around [Svelte](svelte).
 
 ## Build Requirements
 
-- A recent version of node.js. 
+- Node.js v8+
 
 ## Usage Requirements
 
