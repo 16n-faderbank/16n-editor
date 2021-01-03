@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 export const configuration = writable(null);
 export const editConfiguration = writable(null);
@@ -7,4 +7,4 @@ export const midiOutputs = writable([]);
 export const selectedMidiInput = writable(null);
 export const selectedMidiOutput = writable(null);
 export const webMidiEnabled = writable(null);
-export const controllerMightNeedFactoryReset = writable(false)
+export const controllerMightNeedFactoryReset = writable(false);

@@ -1,7 +1,8 @@
 import { logger } from "./logger.js";
 
 export class ConfigurationObject {
-  constructor({ ledOn = true,
+  constructor({
+    ledOn = true,
     ledFlash = true,
     controllerFlip = false,
     midiThru = false,
@@ -11,8 +12,8 @@ export class ConfigurationObject {
     fadermax = 8192,
     firmwareVersion = "unknown",
     usbControls = [],
-    trsControls = [] }) {
-
+    trsControls = [],
+  }) {
     this.ledOn = ledOn;
     this.ledFlash = ledFlash;
     this.controllerFlip = controllerFlip;
@@ -27,19 +28,22 @@ export class ConfigurationObject {
   }
 
   isEquivalent(otherConfig) {
-    let optionEquivalents = (this.ledOn == otherConfig.ledOn &&
+    let optionEquivalents =
+      this.ledOn == otherConfig.ledOn &&
       this.ledFlash == otherConfig.ledFlash &&
       this.controllerFlip == otherConfig.controllerFlip &&
-      this.midiThru == otherConfig.midiThru
-    );
-    
-    if(("i2cMaster" in this) || ("i2cMaster" in otherConfig)) {
-      optionEquivalents = optionEquivalents && (this.i2cMaster == otherConfig.i2cMaster);
+      this.midiThru == otherConfig.midiThru;
+
+    if ("i2cMaster" in this || "i2cMaster" in otherConfig) {
+      optionEquivalents =
+        optionEquivalents && this.i2cMaster == otherConfig.i2cMaster;
     }
 
-    if(("fadermax" in this) || ("fadermax" in otherConfig)) {
-      optionEquivalents = optionEquivalents && (this.fadermax == otherConfig.fadermax)
-                                            && (this.fadermin == otherConfig.fadermin);
+    if ("fadermax" in this || "fadermax" in otherConfig) {
+      optionEquivalents =
+        optionEquivalents &&
+        this.fadermax == otherConfig.fadermax &&
+        this.fadermin == otherConfig.fadermin;
     }
 
     let usbEquivalent = true;
@@ -47,15 +51,21 @@ export class ConfigurationObject {
 
     this.usbControls.forEach((control, i) => {
       let otherControl = otherConfig.usbControls[i];
-      if (control.channel != otherControl.channel || control.cc != otherControl.cc) {
-        usbEquivalent = false
+      if (
+        control.channel != otherControl.channel ||
+        control.cc != otherControl.cc
+      ) {
+        usbEquivalent = false;
       }
     });
 
     this.trsControls.forEach((control, i) => {
       let otherControl = otherConfig.trsControls[i];
-      if (control.channel != otherControl.channel || control.cc != otherControl.cc) {
-        usbEquivalent = false
+      if (
+        control.channel != otherControl.channel ||
+        control.cc != otherControl.cc
+      ) {
+        usbEquivalent = false;
       }
     });
 
@@ -63,7 +73,7 @@ export class ConfigurationObject {
   }
 
   toSysexArray() {
-    let array = Array.from({ length: 84 }, (v) => 0)
+    let array = Array.from({ length: 84 }, (v) => 0);
 
     array[0] = this.deviceId;
     array[1] = this.firmwareArray()[0];
@@ -74,16 +84,17 @@ export class ConfigurationObject {
     array[5] = this.ledFlash ? 1 : 0;
     array[6] = this.controllerFlip ? 1 : 0;
 
-    array[7] = this.i2cMaster
+    array[7] = this.i2cMaster;
 
-    let faderminMSB = this.fadermin >> 7 
+    let faderminMSB = this.fadermin >> 7;
     let faderminLSB = this.fadermin - (faderminMSB << 7);
-    array[8] = faderminLSB
-    array[9] = faderminMSB
+    array[8] = faderminLSB;
+    array[9] = faderminMSB;
     let fadermaxMSB = this.fadermax >> 7;
     let fadermaxLSB = this.fadermax - (fadermaxMSB << 7);
-    array[10] = fadermaxLSB
-    array[11] = fadermaxMSB
+    array[10] = fadermaxLSB;
+    array[11] = fadermaxMSB;
+
     array[12] = this.midiThru ? 1 : 0;
 
     let usbChannelOffset = 20;
@@ -105,20 +116,20 @@ export class ConfigurationObject {
 
   toDeviceOptionsSysexArray() {
     const fullArray = this.toSysexArray();
-    return fullArray.slice(4,20);
+    return fullArray.slice(4, 20);
   }
 
   toUSBOptionsSysexArray() {
     const fullArray = this.toSysexArray();
-    const channels = fullArray.slice(20,36);
-    const ccs = fullArray.slice(52,68);
+    const channels = fullArray.slice(20, 36);
+    const ccs = fullArray.slice(52, 68);
     return channels.concat(ccs);
   }
 
   toTRSOptionsSysexArray() {
     const fullArray = this.toSysexArray();
-    const channels = fullArray.slice(36,52);
-    const ccs = fullArray.slice(68,84);
+    const channels = fullArray.slice(36, 52);
+    const ccs = fullArray.slice(68, 84);
     return channels.concat(ccs);
   }
 
@@ -127,17 +138,19 @@ export class ConfigurationObject {
     // truncate all controllers to length $length;
     let controllerCount = this.device().controlCount;
 
-    o.usbControls = o.usbControls.splice(0,controllerCount);
-    o.usbControls.forEach(c => delete(c.val));
+    o.usbControls = o.usbControls.splice(0, controllerCount);
+    o.usbControls.forEach((c) => delete c.val);
 
-    o.trsControls = o.trsControls.splice(0,controllerCount);
+    o.trsControls = o.trsControls.splice(0, controllerCount);
 
     return JSON.stringify(o, false, 2);
   }
 
   isNewConfigInvalid(json) {
-    if(json.deviceId != this.deviceId) {
-      return(`Cannot update - this data file is for a ${ConfigurationObject.devices[json.deviceId].name}, but you are trying to install it on a ${this.device().name} `)
+    if (json.deviceId != this.deviceId) {
+      return `Cannot update - this data file is for a ${
+        ConfigurationObject.devices[json.deviceId].name
+      }, but you are trying to install it on a ${this.device().name} `;
     }
 
     // if(json.firmwareVersion != this.firmwareVersion) {
@@ -148,9 +161,9 @@ export class ConfigurationObject {
   }
 
   updateFromJson(json) {
-    Object.keys(json).forEach(key => {
+    Object.keys(json).forEach((key) => {
       this[key] = json[key];
-    })
+    });
 
     return this;
   }
@@ -161,7 +174,7 @@ export class ConfigurationObject {
 
   firmwareArray() {
     let arr = this.firmwareVersion.trim().split(".");
-    return arr.map(n => parseInt(n));
+    return arr.map((n) => parseInt(n));
   }
 
   static clone(obj) {
@@ -181,12 +194,12 @@ export class ConfigurationObject {
 
     obj.usbControls.forEach((control, i) => {
       newObj.usbControls[i] = { ...control };
-    })
+    });
     obj.trsControls.forEach((control, i) => {
       newObj.trsControls[i] = { ...control };
-    })
+    });
 
-    return newObj
+    return newObj;
   }
 
   static returnConfigHashFromSysex(data) {
@@ -196,54 +209,54 @@ export class ConfigurationObject {
     let deviceId = data[5];
     let firmwareVersion = data[6] + "." + data[7] + "." + data[8];
 
-    let ledOn = data[1+offset];
-    let ledFlash = data[2+offset];
-    let controllerFlip = data[3+offset];
+    let ledOn = data[1 + offset];
+    let ledFlash = data[2 + offset];
+    let controllerFlip = data[3 + offset];
 
-    let i2cMaster = data[4+offset] == 1;
+    let i2cMaster = data[4 + offset] == 1;
 
-    let faderminLSB = data[5+offset];
-    let faderminMSB = data[6+offset]
+    let faderminLSB = data[5 + offset];
+    let faderminMSB = data[6 + offset];
     let fadermin = (faderminMSB << 7) + faderminLSB;
 
-    let fadermaxLSB = data[7+offset];
-    let fadermaxMSB = data[8+offset]
+    let fadermaxLSB = data[7 + offset];
+    let fadermaxMSB = data[8 + offset];
     let fadermax = (fadermaxMSB << 7) + fadermaxLSB;
 
-    let midiThru = data[9+offset];
+    let midiThru = data[9 + offset];
 
     let usbControls = [];
     let trsControls = [];
 
-    data.slice(17+offset, 33+offset).forEach((chan, i) => {
+    data.slice(17 + offset, 33 + offset).forEach((chan, i) => {
       if (chan != 0x7f) {
         usbControls[i] = {
-          channel: chan
-        }
+          channel: chan,
+        };
       }
     });
 
-    data.slice(33+offset, 49+offset).forEach((chan, i) => {
+    data.slice(33 + offset, 49 + offset).forEach((chan, i) => {
       if (chan != 0x7f) {
         trsControls[i] = {
-          channel: chan
-        }
+          channel: chan,
+        };
       }
     });
 
-    data.slice(49+offset, 65+offset).forEach((cc, i) => {
+    data.slice(49 + offset, 65 + offset).forEach((cc, i) => {
       if (cc != 0x7f) {
         usbControls[i].cc = cc;
       }
     });
 
-    data.slice(65+offset, 81+offset).forEach((cc, i) => {
+    data.slice(65 + offset, 81 + offset).forEach((cc, i) => {
       if (cc != 0x7f) {
         trsControls[i].cc = cc;
       }
     });
 
-    usbControls.forEach((c) => c.val = 0);
+    usbControls.forEach((c) => (c.val = 0));
 
     return new ConfigurationObject({
       ledOn,
@@ -256,7 +269,7 @@ export class ConfigurationObject {
       firmwareVersion,
       i2cMaster,
       fadermin,
-      fadermax
+      fadermax,
     });
   }
 }
@@ -265,30 +278,30 @@ ConfigurationObject.devices = [
   {
     name: "unknown",
     controlCount: 0,
-    capabilities:{}
+    capabilities: {},
   },
   {
     name: "Oxion development board",
     controlCount: 4,
     capabilities: {
-      led: true
-    }
+      led: true,
+    },
   },
   {
     name: "16n",
     controlCount: 16,
     capabilities: {
       i2c: true,
-      led: true
-    }
+      led: true,
+    },
   },
   {
     name: "16n (LC)",
     controlCount: 16,
     capabilities: {
       i2c: true,
-      led: true
+      led: true,
     },
-    sendShortMessages: true
-  }
+    sendShortMessages: true,
+  },
 ];
