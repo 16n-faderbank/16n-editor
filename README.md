@@ -33,6 +33,17 @@ To create an optimised version of the app:
 
 You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
 
+
+## Code formatting
+
+We use `prettier` for code formatting. From your local directory:
+
+    npx prettier --write 'src'
+
+will prettify the `src/` directory. Code that fails Prettier's formatting standards will block merge at Github.
+
+We're using a similar approach to [the one Simon Willison describves here](https://til.simonwillison.net/github-actions/prettier-github-actions).
+
 ## Project Structure
 
 * `src/App.Svelte` is quite dense, but is the main entrypoint for the application and contains the app's structure.
