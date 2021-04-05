@@ -107,11 +107,7 @@
     }
   }
 
-  fetch("https://api.github.com/repos/16n-faderbank/16n/releases")
-    .then(r => r.json())
-    .then(d => {
-      window.latestVersion = d[0].tag_name.replace(/[a-zA-z]/g, "");
-    }).catch(e => logger(e));
+  window.latestVersion = "2.1.0";
 </script>
 
 <style>
@@ -183,7 +179,7 @@
               {#if upgradeString.trim() != ""}
               <span class='upgrade'>
                 {upgradeString}
-                <a href="https://github.com/16n-faderbank/16n/releases">Download</a>
+                <a href="https://github.com/16n-faderbank/16n/releases/latest">Download upgrade</a>
               </span>
               {/if}
             </p>
