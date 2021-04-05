@@ -1,4 +1,5 @@
 <script>
+window.debugMode = true;
   import { setContext } from 'svelte'
   import { gt as semverGt } from 'semver';
   import { ConfigurationObject } from "./Configuration.js";
@@ -21,6 +22,7 @@
   import DebugConsole from "./components/DebugConsole.svelte";
   import DeviceOptions from "./components/DeviceOptions.svelte";
   import EditControl from "./components/EditControl.svelte";
+  import FactoryReset from "./components/FactoryReset.svelte";
   import Icon from "./components/Icon.svelte";
   import MidiContext from "./components/MidiContext.svelte";
   import MidiEnabled from "./components/MidiEnabled.svelte";
@@ -97,14 +99,11 @@
 
   function transmitFactoryReset() {
     logger("Sending factory reset request");
+    editMode = false;
     OxionMidi.sendFactoryResetRequest($selectedMidiOutput);
-  }
-
-  function confirmTransmitFactoryReset() {
-    if (window.confirm("Do you really want to factory-reset any attached 16n's EEPROM?")) {
-      alert("Reset")
-      transmitFactoryReset();
-    }
+    setTimeout(() => {
+      OxionMidi.requestConfig($selectedMidiOutput);
+    }, 50);
   }
 
   window.latestVersion = "2.1.0";
@@ -202,6 +201,7 @@
               <Tab>USB</Tab> 
               <Tab>TRS Jack</Tab> 
               <Tab>Device Options</Tab> 
+              <Tab>Factory Reset</Tab> 
             </TabList>
 
             <TabPanel>
@@ -226,6 +226,10 @@
 
             <TabPanel>
               <DeviceOptions />
+            </TabPanel>
+
+            <TabPanel>
+              <FactoryReset on:message={handleMessage} />
             </TabPanel>
           </Tabs>
 

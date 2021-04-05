@@ -8,13 +8,22 @@
   export let clickMessageName = null;
   export let icon = null;
   export let disabled = false;
+  export let confirmMessage = null;
 
   const dispatch = createEventDispatcher();
 
   function dispatchClick() {
-    dispatch('message', {
-      name: clickMessageName
-    })
+    if(confirmMessage !== null) {
+      if(window.confirm(confirmMessage)) {
+        dispatch('message', {
+          name: clickMessageName
+        });
+      }
+    } else {
+      dispatch('message', {
+        name: clickMessageName
+      })
+    }
   }
 </script>
 
