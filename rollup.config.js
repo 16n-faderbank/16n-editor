@@ -17,7 +17,12 @@ export default {
     file: 'public/build/bundle.js'
   },
   plugins: [
-    replace({ "__buildversion__": process.env.npm_package_version }),
+    replace(
+      {
+        "__buildversion__": process.env.npm_package_version,
+        "__firmwareversion__": process.env.npm_package_config_firmwareversion
+      },
+    ),
     svelte({
       compilerOptions: {
         // enable run-time checks when not in production

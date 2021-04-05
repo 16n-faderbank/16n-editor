@@ -1,6 +1,9 @@
 {
   "name": "16n-editor",
   "version": "1.2.1",
+  "config": {
+    "firmwareversion": "2.1.0"
+  },
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",

@@ -17,6 +17,10 @@ The 16n editor is a Javascript app based around [Svelte](svelte).
 
     npm install
 
+## Configuration
+
+Note that `package.json` contains a config object that lets us specify the latest version of the firmware, thus triggering a prompt to update.
+
 ## Running the development environment
 
     npm run dev
