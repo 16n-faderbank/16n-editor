@@ -1,6 +1,7 @@
 <script>
   window.debugMode = true;
 
+  import { gte as semverGte } from 'semver';
   import { handleMessage } from "./message_handling";
 
   import {
@@ -67,13 +68,11 @@
           <ViewMode on:message={handleMessage}></ViewMode> 
         {/if}
         <p />
+      {:else if $controllerMightNeedFactoryReset && (semverGte($configuration.firmwareVersion, "2.1.0"))}
+        <p>It looks like a 16n is trying to connect, but may have a corrupt memory.</p>
+        <Button label="Click to reset your 16n's EEPROM to factory defaults" clickMessageName="transmitFactoryReset" on:message={handleMessage}></Button>
       {:else}
-        {#if $controllerMightNeedFactoryReset}
-          <p>It looks like a 16n is trying to connect, but may have a corrupt memory.</p>
-          <Button label="Click to reset your 16n's EEPROM to factory defaults" clickMessageName="transmitFactoryReset" on:message={handleMessage}></Button>
-        {:else}
-          <p>Connect a controller via USB.</p>
-        {/if}
+        <p>Connect a controller via USB.</p>
       {/if}
     </MidiEnabled>
 
