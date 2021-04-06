@@ -1,7 +1,5 @@
 
 <script>
-  import { logger } from "../logger.js";
-
   import { gte as semverGte } from 'semver';
 
   import {

@@ -1,6 +1,6 @@
 <script>
-window.debugMode = true;
-  import { setContext } from 'svelte'
+  window.debugMode = true;
+
   import { gt as semverGt } from 'semver';
   import { ConfigurationObject } from "./Configuration.js";
   import { ImportExport } from "./ImportExport.js";
@@ -10,37 +10,21 @@ window.debugMode = true;
   import {
     configuration,
     editConfiguration,
-    selectedMidiInput,
     selectedMidiOutput,
-    webMidiEnabled,
     controllerMightNeedFactoryReset
   } from "./stores.js";
 
   import Button from "./components/Button.svelte";
-  import CheckOption from "./components/CheckOption.svelte";
-  import Control from "./components/Control.svelte";
-  import DebugConsole from "./components/DebugConsole.svelte";
-  import DeviceOptions from "./components/DeviceOptions.svelte";
-  import EditControl from "./components/EditControl.svelte";
-  import FactoryReset from "./components/FactoryReset.svelte";
-  import Icon from "./components/Icon.svelte";
+  // import DebugConsole from "./components/DebugConsole.svelte";
+  import EditMode from './components/EditMode.svelte';
   import MidiContext from "./components/MidiContext.svelte";
   import MidiEnabled from "./components/MidiEnabled.svelte";
-  import MidiSelector from "./components/MidiSelector.svelte";
-  import Subhead from "./components/Subhead.svelte";
-  import { Tabs, TabList, TabPanel, Tab } from './components/tabs';
-
-  // window.debugMode = true;
+  // import MidiSelector from "./components/MidiSelector.svelte";
+  import ViewMode from './components/ViewMode.svelte';
 
   let editMode = false;
-  let configDirty = false;
   let upgradeString = "";
 
-  editConfiguration.subscribe(c => {
-    if (c && $configuration) {
-      configDirty = !c.isEquivalent($configuration);
-    }
-  });
 
   configuration.subscribe(c => {
     if (c && c.firmwareVersion && window.latestVersion && !window.versionCompared) {
@@ -111,10 +95,6 @@ window.debugMode = true;
 
 <style>
 
-  #controls {
-    display: flex;
-    min-width: calc(16 * 60px);
-  }
 
   #head {
     margin-bottom: 1rem;
@@ -153,11 +133,6 @@ window.debugMode = true;
     flex: 1;
   }
 
-  .foot-right {
-    flex: 1;
-    text-align: right;
-  }
-
  span.upgrade {
    display: block;
    margin-top: 5px;
@@ -191,80 +166,9 @@ window.debugMode = true;
     <MidiEnabled fallback="WebMIDI could not be enabled. Please use a web browser that supports WebMIDI, such as Google Chrome.">
       {#if $configuration}
         {#if editMode}
-          <Subhead title="Edit Configuration">
-            <Button label="Cancel" icon="times" clickMessageName="toggleEditMode" on:message={handleMessage} />
-            <Button label="Import config" icon="file-import" clickMessageName="importConfig" on:message={handleMessage}/>
-            <Button label="Update controller" icon="download" clickMessageName="transmitConfig" disabled={!configDirty} on:message={handleMessage}  />
-          </Subhead>
-          <Tabs>
-            <TabList>
-              <Tab>USB</Tab> 
-              <Tab>TRS Jack</Tab> 
-              <Tab>Device Options</Tab> 
-              <Tab>Factory Reset</Tab> 
-            </TabList>
-
-            <TabPanel>
-              <div id="controls">
-                {#each $editConfiguration.usbControls as editControl, index}
-                  {#if index < $configuration.device().controlCount}
-                    <EditControl {editControl} {index} />
-                  {/if}
-                {/each}
-              </div>
-            </TabPanel>
-          
-            <TabPanel>
-              <div id="controls">
-                {#each $editConfiguration.trsControls as editControl, index}
-                  {#if index < $configuration.device().controlCount}
-                    <EditControl {editControl} {index} />
-                  {/if}
-                {/each}
-              </div>
-            </TabPanel>
-
-            <TabPanel>
-              <DeviceOptions />
-            </TabPanel>
-
-            <TabPanel>
-              <FactoryReset on:message={handleMessage} />
-            </TabPanel>
-          </Tabs>
-
+          <EditMode on:message={handleMessage}></EditMode>
         {:else}
-          <Subhead title="Current Configuration">
-            <Button label="Export current config" icon="file-export" clickMessageName="exportConfig" on:message={handleMessage}/>
-            <Button label="Edit Config" icon="pencil-alt" clickMessageName="toggleEditMode" on:message={handleMessage} />
-            <!-- <Button label="Reload config from controller" icon="sync" clickMessageName="requestConfig" on:message={handleMessage}/> -->
-          </Subhead>
-          <Tabs>
-            <TabList>
-              <Tab>USB</Tab> 
-              <Tab>TRS Jack</Tab> 
-            </TabList>
-            <TabPanel>
-              <div id="controls">
-                {#each $configuration.usbControls as control, index}
-                  {#if index < $configuration.device().controlCount}
-                    <Control {control} {index} />
-                  {/if}
-                {/each}
-              </div>
-            </TabPanel>
-
-            <TabPanel>
-              <div id="controls">
-                {#each $configuration.trsControls as control, index}
-                  {#if index < $configuration.device().controlCount}
-                    <Control {control} {index} disableValue={true} />
-                  {/if}
-                {/each}
-              </div>
-              <p>There is no realtime preview of the TRS outputs.</p>
-            </TabPanel>
-          </Tabs>
+          <ViewMode on:message={handleMessage}></ViewMode> 
         {/if}
         <p />
       {:else}

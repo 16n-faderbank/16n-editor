@@ -1,6 +1,5 @@
 <script>
   import WebMidi from "webmidi";
-  import { onMount } from 'svelte'
   import { ConfigurationObject } from "../Configuration.js";
   import { logger } from "../logger.js";
   import { OxionMidi } from "../OxionMidi.js";
@@ -8,7 +7,6 @@
 
   import {
     configuration,
-    editConfiguration,
     midiInputs,
     midiOutputs,
     selectedMidiInput,
@@ -84,7 +82,6 @@
       }
     }
     if (!$selectedMidiOutput && $midiOutputs.length > 0) {
-      // TODO TODO if 16n
       let sixteenN = $midiOutputs.find(output => output.name.match(/.*16n.*/));
       if(sixteenN) {
         selectedMidiOutput.update(i => sixteenN);
