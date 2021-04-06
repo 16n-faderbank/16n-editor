@@ -1,13 +1,13 @@
 /*
  * Message Handling
- * This is basically how all events get handled: 
- * events should bubble up to App.svelte, which then calls 
- * handleMessage in this file, which works out what to do. I've 
- * extracted this from App.svelte because it was just 
+ * This is basically how all events get handled:
+ * events should bubble up to App.svelte, which then calls
+ * handleMessage in this file, which works out what to do. I've
+ * extracted this from App.svelte because it was just
  * getting a bit big...
  */
 
-import { get } from 'svelte/store';
+import { get } from "svelte/store";
 
 import { logger } from "./logger.js";
 import { ConfigurationObject } from "./Configuration.js";
@@ -18,7 +18,7 @@ import {
   configuration,
   editConfiguration,
   editMode,
-  selectedMidiOutput
+  selectedMidiOutput,
 } from "./stores.js";
 
 function handleMessage(message) {
@@ -33,7 +33,11 @@ function handleMessage(message) {
       OxionMidi.requestConfig(get(selectedMidiOutput));
       break;
     case "importConfig":
-      ImportExport.import(get(editConfiguration), get(configuration), editConfiguration);
+      ImportExport.import(
+        get(editConfiguration),
+        get(configuration),
+        editConfiguration
+      );
       break;
     case "exportConfig":
       ImportExport.export(get(configuration));
@@ -47,10 +51,10 @@ function handleMessage(message) {
 }
 
 function toggleEditMode() {
-  editMode.update(e => !get(editMode));
+  editMode.update((e) => !get(editMode));
   if (get(editMode)) {
     let oldConfig = ConfigurationObject.clone(get(configuration));
-    editConfiguration.update(c => oldConfig);
+    editConfiguration.update((c) => oldConfig);
   }
 }
 
@@ -62,13 +66,13 @@ function transmitConfig() {
 
   $configuration = $editConfiguration;
 
-  editMode.update(e => !get(editMode));
+  editMode.update((e) => !get(editMode));
 }
 
 function transmitFactoryReset() {
   logger("Sending factory reset request");
 
-  editMode.update(e => false);
+  editMode.update((e) => false);
   OxionMidi.sendFactoryResetRequest(get(selectedMidiOutput));
 
   setTimeout(() => {
