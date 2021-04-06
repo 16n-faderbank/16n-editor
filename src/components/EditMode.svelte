@@ -1,4 +1,6 @@
 <script>
+  import { gte as semverGte } from 'semver';
+
   import Button from "./Button.svelte";
   import DeviceOptions from "./DeviceOptions.svelte";
   import EditControl from './EditControl.svelte';
@@ -40,7 +42,9 @@
     <Tab>USB</Tab> 
     <Tab>TRS Jack</Tab> 
     <Tab>Device Options</Tab> 
+    {#if semverGte($configuration.firmwareVersion, "2.1.0")}
     <Tab>Factory Reset</Tab> 
+    {/if}
   </TabList>
 
   <TabPanel>
@@ -67,7 +71,9 @@
     <DeviceOptions />
   </TabPanel>
 
+  {#if semverGte($configuration.firmwareVersion, "2.1.0")}
   <TabPanel>
     <FactoryReset on:message />
   </TabPanel>
+  {/if}
 </Tabs>
