@@ -37,6 +37,10 @@
     margin: 0;
     margin-right: 5px;
   }
+
+  dd input:invalid {
+    background: #f99;
+  }
 </style>
 
 <dl class="config-column">
@@ -55,7 +59,7 @@
       type="number"
       bind:value={editControl.cc}
       on:change={touchControl}
-      min="1"
+      min="0"
       max="127" />
   </dd>
 </dl>
