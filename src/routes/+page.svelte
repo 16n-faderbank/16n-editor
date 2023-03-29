@@ -1,11 +1,13 @@
 <script lang="ts">
   /* global __BUILD_VERSION__ */
+
   import { browser } from "$app/environment";
   import { gte as semverGte } from "semver";
   import { onMount } from "svelte";
   import { WebMidi } from "webmidi";
 
   import { onMIDISuccess } from "$lib/midi/midi";
+  import { sendFactoryResetRequest } from "$lib/midi/sysex";
 
   import {
     configuration,
@@ -16,12 +18,9 @@
   } from "$lib/stores";
 
   import Button from "$lib/components/Button.svelte";
-  // import DebugConsole from "./components/DebugConsole.svelte";
   import DeviceDetails from "$lib/components/DeviceDetails.svelte";
   import Editing from "./Editing.svelte";
-  // import MidiSelector from "./components/MidiSelector.svelte";
   import Viewing from "./Viewing.svelte";
-  import { sendFactoryResetRequest } from "$lib/midi/sysex";
 
   const buildVersion = __BUILD_VERSION__;
 
