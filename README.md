@@ -46,6 +46,10 @@ To create an optimised version of the app:
 
 This will emit a production build, as a purely static site, to `build/`. You can run this version of the code with `npm run preview`.
 
+## Deployment
+
+The built site (in `/build`) is copied over to the 16n repository and deployed from there.
+
 ## Code formatting
 
 We use `prettier` for code formatting. From your local directory:
@@ -85,10 +89,6 @@ There are a number of stores exported that are used throughout the application:
 - `midiInputs` and `midiOutputs` describes the currently connected MIDI input/output ports.
 - `selectedMidiInput` and `selectedMidiOutput` represent the actual port that's used to talk to a 16n.
 - `webMidiEnabled` is a boolean representing if the current browser supports WebMidi.
-
-## Deployment
-
-The built site (in `/build`) is copied over to the 16n repository and deployed from there.
 
 ## Icons
 
