@@ -9,6 +9,7 @@
   possibleChannels.forEach((c, i) => (possibleChannels[i] = c + 1));
 
   function touchControl() {
+    // trigger reactivity
     editConfiguration.set($editConfiguration);
   }
 </script>
