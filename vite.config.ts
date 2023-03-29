@@ -4,8 +4,8 @@ import { version, config } from "./package.json";
 
 export default defineConfig({
   define: {
-    BUILD_VERSION: `'${version}'`,
-    FIRMWARE_VERSION: `'${config.firmwareVersion}'`,
+    __BUILD_VERSION__: `'${version}'`,
+    __FIRMWARE_VERSION__: `'${config.firmwareVersion}'`,
   },
   plugins: [sveltekit()],
 });

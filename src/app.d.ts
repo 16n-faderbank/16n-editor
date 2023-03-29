@@ -7,8 +7,8 @@ declare global {
     // interface PageData {}
     // interface Platform {}
   }
-  declare const FIRMWARE_VERSION: string;
-  declare const BUILD_VERSION: string;
+  declare const __FIRMWARE_VERSION__: string;
+  declare const __BUILD_VERSION__: string;
 }
 
 export {};

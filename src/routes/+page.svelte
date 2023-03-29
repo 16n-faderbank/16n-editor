@@ -1,5 +1,5 @@
 <script lang="ts">
-  /* global BUILD_VERSION */
+  /* global __BUILD_VERSION__ */
   import { browser } from "$app/environment";
   import { gte as semverGte } from "semver";
   import { onMount } from "svelte";
@@ -22,6 +22,8 @@
   // import MidiSelector from "./components/MidiSelector.svelte";
   import Viewing from "./Viewing.svelte";
   import { sendFactoryResetRequest } from "$lib/midi/sysex";
+
+  const buildVersion = __BUILD_VERSION__;
 
   const supportsWebMidi = browser ? !!navigator.requestMIDIAccess : true;
 
@@ -78,7 +80,7 @@
 
   <div id="foot">
     <div class="foot-left">
-      16n Editor v{BUILD_VERSION}
+      16n Editor v{buildVersion}
     </div>
   </div>
 </main>
