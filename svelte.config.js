@@ -15,7 +15,7 @@ const config = {
     alias: {
       $lib: "src/lib",
     },
-    appDir: "app"
+    appDir: "app",
   },
 };
 
