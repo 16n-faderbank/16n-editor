@@ -48,34 +48,44 @@
     <DeviceDetails />
   </div>
 
-  {#if $webMidiEnabled}
-    {#if $configuration}
-      {#if $controllerMightNeedFactoryReset && semverGte($configuration.firmwareVersion, "2.1.0")}
-        <p>
-          It looks like a 16n is trying to connect, but may have a corrupt
-          memory.
-        </p>
-        <Button
-          label="Click to reset your 16n's EEPROM to factory defaults"
-          click={transmitFactoryReset}
-        />
-      {:else}
-        {#if $editMode}
-          <Editing />
+  <div id="inner">
+    {#if $webMidiEnabled}
+      {#if $configuration}
+        {#if $controllerMightNeedFactoryReset && semverGte($configuration.firmwareVersion, "2.1.0")}
+          <!-- webmidi enabled, config not receiving, despite having a firmware that should work -->
+          <div class="notice">
+            <p>
+              It looks like a 16n is trying to connect, but may have a corrupt
+              memory.
+            </p>
+            <p>
+              <Button
+                label="Click to reset your 16n's EEPROM to factory defaults"
+                click={transmitFactoryReset}
+              />
+            </p>
+          </div>
         {:else}
-          <Viewing />
+          <!-- webmidi enabled, config setup, we're good to edit -->
+          {#if $editMode}
+            <Editing />
+          {:else}
+            <Viewing />
+          {/if}
+          <p />
         {/if}
-        <p />
+      {:else}
+        <!-- webmidi compatible browser, but no device -->
+        <p class="notice">Connect a controller via USB.</p>
       {/if}
     {:else}
-      <p>Connect a controller via USB.</p>
+      <!-- webmidi incompatible device -->
+      <p class="notice">
+        WebMIDI could not be enabled. Please use a web browser that supports
+        WebMIDI, such as Google Chrome.
+      </p>
     {/if}
-  {:else}
-    <p>
-      WebMIDI could not be enabled. Please use a web browser that supports
-      WebMIDI, such as Google Chrome.
-    </p>
-  {/if}
+  </div>
 
   <div id="foot">
     <div class="foot-left">
@@ -89,11 +99,12 @@
     margin-bottom: 1rem;
     border-bottom: 1px solid #ccc;
     display: flex;
+    flex: initial;
   }
 
   #head h1 {
     flex: 1 0;
-    margin: 0 0 2rem;
+    margin: 0 0 1rem;
   }
 
   main {
@@ -101,16 +112,29 @@
     margin: 0 auto;
     min-width: calc(16 * 75px);
     /* background: #fff; */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 5rem);
+  }
+
+  #inner {
+    flex: 1;
   }
 
   #foot {
+    flex: initial;
     font-size: 80%;
     border-top: 1px solid #ccc;
-    padding-top: 5px;
+    padding: 1rem 0;
     display: flex;
   }
 
   .foot-left {
     flex: 1;
+  }
+
+  .notice {
+    text-align: center;
+    margin-top: 6rem;
   }
 </style>
