@@ -6,7 +6,7 @@ The 16n editor is a Javascript app based around [SvelteKit](sk).
 
 Here's a video walkthrough:
 
-[![You can view a video introduction here.](https://img.youtube.com/vi/3n2_3b55qWY/0.jpg)](https://youtu.be/3n2_3b55qWY)
+[![You can view a video overview of the editor functionality here.](https://img.youtube.com/vi/3n2_3b55qWY/0.jpg)](https://youtu.be/3n2_3b55qWY)
 
 Version 2.0.0 of the editor is a large overhaul, with a few goals:
 
