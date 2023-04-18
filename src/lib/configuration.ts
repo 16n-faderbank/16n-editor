@@ -24,7 +24,7 @@ export const isEquivalent = (
   }
 
   let usbEquivalent = true;
-  const trsEquivalent = true;
+  let trsEquivalent = true;
 
   configA.usbControls.forEach((control: Control, i: number) => {
     const otherControl = configB.usbControls[i];
@@ -42,7 +42,7 @@ export const isEquivalent = (
       control.channel != otherControl.channel ||
       control.cc != otherControl.cc
     ) {
-      usbEquivalent = false;
+      trsEquivalent = false;
     }
   });
 
