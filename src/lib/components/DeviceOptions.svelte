@@ -31,40 +31,41 @@
   </CheckOption>
 {/if}
 
-<hr />
+{#if deviceHasCapability($configuration, "faderCalibration")}
+  <hr />
+  <h3>Fader Minimum/Maximum calibration</h3>
+  <div>
+    <label for="faderMin">Fader Minimum raw value</label>
+    <input
+      name="faderMin"
+      type="number"
+      bind:value={$editConfiguration.faderMin}
+      on:blur={touchControl}
+      min="0"
+      max={(1 << 13) - 1}
+    />
+  </div>
+  <div>
+    <label for="faderMax">Fader Maximum raw value</label>
+    <input
+      name="faderMax"
+      type="number"
+      bind:value={$editConfiguration.faderMax}
+      on:blur={touchControl}
+      min="0"
+      max={(1 << 13) - 1}
+    />
+  </div>
 
-<h3>Fader Minimum/Maximum calibration</h3>
-<div>
-  <label for="faderMin">Fader Minimum raw value</label>
-  <input
-    name="faderMin"
-    type="number"
-    bind:value={$editConfiguration.faderMin}
-    on:blur={touchControl}
-    min="0"
-    max={(1 << 13) - 1}
-  />
-</div>
-<div>
-  <label for="faderMax">Fader Maximum raw value</label>
-  <input
-    name="faderMax"
-    type="number"
-    bind:value={$editConfiguration.faderMax}
-    on:blur={touchControl}
-    min="0"
-    max={(1 << 13) - 1}
-  />
-</div>
-
-<p class="note">
-  You shouldn't touch this unless you are having issues with your faders either
-  reaching <code>127</code>
-  before the end of their travel, or not at all.<br /><br />
-  "Raw" analog values are read from the faders between 0 and 8192. Bring the fader
-  maximum down until all faders smoothly travel from 0 to 127 on the debug view (bearing
-  in mind there is a small dead zone at either end of a fader).
-</p>
+  <p class="note">
+    You shouldn't touch this unless you are having issues with your faders
+    either reaching <code>127</code>
+    before the end of their travel, or not at all.<br /><br />
+    "Raw" analog values are read from the faders between 0 and 8192. Bring the fader
+    maximum down until all faders smoothly travel from 0 to 127 on the debug view
+    (bearing in mind there is a small dead zone at either end of a fader).
+  </p>
+{/if}
 
 {#if deviceHasCapability($configuration, "i2c")}
   <hr />

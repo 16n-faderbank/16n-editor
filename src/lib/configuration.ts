@@ -258,6 +258,7 @@ export const allKnownDevices = [
     capabilities: {
       i2c: true,
       led: true,
+      faderCalibration: true,
     },
   },
   {
@@ -266,7 +267,16 @@ export const allKnownDevices = [
     capabilities: {
       i2c: true,
       led: true,
+      faderCalibration: true,
     },
     sendShortMessages: true,
+  },
+  {
+    name: "16next",
+    controlCount: 16,
+    capabilities: {
+      i2c: true,
+      led: true,
+    },
   },
 ];
