@@ -16,7 +16,7 @@ export const isEquivalent = (
       optionEquivalents && configA.i2cLeader == configB.i2cLeader;
   }
 
-  if ("fadermax" in configA || "fadermax" in configB) {
+  if ("faderMax" in configA || "faderMax" in configB) {
     optionEquivalents =
       optionEquivalents &&
       configA.faderMax == configB.faderMax &&
