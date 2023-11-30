@@ -20,6 +20,7 @@ The result is a little more readable by most JS developers, and we gain a lot of
 ## Build Requirements
 
 - Node.js v16+
+- pnpm (npm is fine, but we prefer pnpm simply for disk-space reasons)
 
 ## Usage Requirements
 
@@ -28,7 +29,7 @@ The result is a little more readable by most JS developers, and we gain a lot of
 
 ## Installation
 
-    npm install
+    pnpm install
 
 ## Configuration
 
@@ -36,7 +37,7 @@ Note that `package.json` contains a `config` object that lets us specify the lat
 
 ## Running the development environment
 
-    npm run dev
+    pnpm run dev
 
 This will run a development environment at `localhost:5173`, with live reloading enabled.
 
@@ -46,9 +47,9 @@ By default, the server will only respond to requests from localhost.
 
 To create an optimised version of the app:
 
-    npm run build
+    pnpm run build
 
-This will emit a production build, as a purely static site, to `build/`. You can run this version of the code with `npm run preview`.
+This will emit a production build, as a purely static site, to `build/`. You can run this version of the code with `pnpm run preview`.
 
 ## Deployment
 
@@ -58,7 +59,7 @@ The built site (in `/build`) is copied over to the 16n repository and deployed f
 
 We use `prettier` for code formatting. From your local directory:
 
-    npm run format
+    pnpm run format
 
 will prettify the `src/` directory. Code that fails Prettier's formatting standards will block merge at Github.
 
@@ -66,7 +67,7 @@ We're using a similar approach to [the one Simon Willison describes here](https:
 
 Code linting is handled with ESLint, and code must meet the Prettier formatting standards in order to lint:
 
-    npm run lint
+    pnpm run lint
 
 ## Project Structure
 
