@@ -272,7 +272,15 @@ export const allKnownDevices = [
     sendShortMessages: true,
   },
   {
-    name: "16next",
+    name: "16rx",
+    controlCount: 16,
+    capabilities: {
+      i2c: true,
+      led: true,
+    },
+  },
+  {
+    name: "16nx",
     controlCount: 16,
     capabilities: {
       i2c: true,
