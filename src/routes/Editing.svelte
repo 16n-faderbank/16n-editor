@@ -19,7 +19,7 @@
     selectedMidiOutput,
   } from "$lib/stores";
 
-  let configDirty = false;
+  let configDirty = $state(false);
 
   editConfiguration.subscribe((c) => {
     if (c && $configuration) {
@@ -38,6 +38,14 @@
   };
 
   const transmitConfig = () => {
+    if (!$editConfiguration) {
+      console.error("No edit configuration found");
+      return;
+    }
+    if (!$selectedMidiOutput) {
+      console.error("No selected MIDI output found");
+      return;
+    }
     const sysexArray = toSysexArray($editConfiguration);
     logger("Sending sysex:", sysexArray);
 
@@ -48,7 +56,9 @@
     $editMode = false;
   };
 
-  $: device = $configuration ? deviceForId($configuration.deviceId) : null;
+  let device = $derived(
+    $configuration ? deviceForId($configuration.deviceId) : null,
+  );
 </script>
 
 <Subhead title="Edit Configuration">
@@ -62,46 +72,48 @@
   />
 </Subhead>
 
-<Tabs>
-  <TabList>
-    <Tab>USB</Tab>
-    <Tab>TRS Jack</Tab>
-    <Tab>Device Options</Tab>
-    {#if semverGte($configuration.firmwareVersion, "2.1.0")}
-      <Tab>Factory Reset</Tab>
-    {/if}
-  </TabList>
+{#if $editConfiguration}
+  <Tabs>
+    <TabList>
+      <Tab>USB</Tab>
+      <Tab>TRS Jack</Tab>
+      <Tab>Device Options</Tab>
+      {#if $configuration && semverGte($configuration.firmwareVersion, "2.1.0")}
+        <Tab>Factory Reset</Tab>
+      {/if}
+    </TabList>
 
-  <TabPanel>
-    <div id="controls">
-      {#each $editConfiguration.usbControls as editControl, index}
-        {#if device && index < device.controlCount}
-          <EditControl {editControl} {index} />
-        {/if}
-      {/each}
-    </div>
-  </TabPanel>
-
-  <TabPanel>
-    <div id="controls">
-      {#each $editConfiguration.trsControls as editControl, index}
-        {#if device && index < device.controlCount}
-          <EditControl {editControl} {index} />
-        {/if}
-      {/each}
-    </div>
-  </TabPanel>
-
-  <TabPanel>
-    <DeviceOptions />
-  </TabPanel>
-
-  {#if semverGte($configuration.firmwareVersion, "2.1.0")}
     <TabPanel>
-      <FactoryReset on:message />
+      <div id="controls">
+        {#each $editConfiguration.usbControls as editControl, index}
+          {#if device && index < device.controlCount}
+            <EditControl {editControl} {index} />
+          {/if}
+        {/each}
+      </div>
     </TabPanel>
-  {/if}
-</Tabs>
+
+    <TabPanel>
+      <div id="controls">
+        {#each $editConfiguration.trsControls as editControl, index}
+          {#if device && index < device.controlCount}
+            <EditControl {editControl} {index} />
+          {/if}
+        {/each}
+      </div>
+    </TabPanel>
+
+    <TabPanel>
+      <DeviceOptions />
+    </TabPanel>
+
+    {#if $configuration && semverGte($configuration.firmwareVersion, "2.1.0")}
+      <TabPanel>
+        <FactoryReset on:message />
+      </TabPanel>
+    {/if}
+  </Tabs>
+{/if}
 
 <style>
   #controls {

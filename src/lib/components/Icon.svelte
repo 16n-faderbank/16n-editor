@@ -1,9 +1,13 @@
 <script lang="ts">
-  export let i: string;
-  export let classList = "";
+  interface Props {
+    i: string;
+    classList?: string;
+  }
+
+  let { i, classList = "" }: Props = $props();
 </script>
 
-<span class="fas fa-{i} {classList}" />
+<span class="fas fa-{i} {classList}"></span>
 
 <style>
   span.fas.mid {

@@ -1,14 +1,23 @@
 <script lang="ts">
   import Icon from "$lib/components/Icon.svelte";
 
-  export let label: string;
-  export let icon = "";
-  export let disabled = false;
-  export let click: () => void;
+  interface Props {
+    label: string;
+    icon?: string;
+    disabled?: boolean;
+    click: () => void;
+  }
+
+  let {
+    label,
+    icon = "",
+    disabled = false,
+    click
+  }: Props = $props();
 </script>
 
 <div class="button-wrapper">
-  <button {disabled} on:click={click}>
+  <button {disabled} onclick={click}>
     {#if icon && icon.trim() !== ""}
       <Icon i={icon} />
     {/if}

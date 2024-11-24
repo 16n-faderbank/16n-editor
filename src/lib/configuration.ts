@@ -229,7 +229,7 @@ export const configFromSysexArray = (data: number[]) => {
 
 export const deviceForId = (id: number) => allKnownDevices[id];
 
-type Capability = "led" | "i2c";
+type Capability = "led" | "i2c" | "faderCalibration";
 
 export const deviceHasCapability = (
   config: ControllerConfiguration,

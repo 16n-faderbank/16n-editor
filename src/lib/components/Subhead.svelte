@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let title: string;
+  interface Props {
+    title: string;
+    children?: () => any;
+  }
+  let { title, children }: Props = $props();
 </script>
 
 <div class="subhead">
@@ -7,7 +11,9 @@
     {title}
   </h2>
   <div class="details">
-    <slot />
+    {#if children}
+      {@render children()}
+    {/if}
   </div>
 </div>
 

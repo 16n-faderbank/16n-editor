@@ -8,7 +8,7 @@
 
   import { onDestroy, onMount } from "svelte";
 
-  let changed = false;
+  let changed = $state(false);
   let firstRunIn = true;
   let firstRunOut = true;
 
@@ -51,7 +51,7 @@
         <select
           name="midi-input-chooser"
           bind:value={$selectedMidiInput}
-          on:change={() => selectedMidiInput.set($selectedMidiInput)}
+          onchange={() => selectedMidiInput.set($selectedMidiInput)}
         >
           {#each $midiInputs as input}
             <!-- <option value={input}>{input.manufacturer} {input.name}</option> -->
@@ -67,7 +67,7 @@
         <select
           name="midi-output-chooser"
           bind:value={$selectedMidiOutput}
-          on:change={() => selectedMidiOutput.set($selectedMidiOutput)}
+          onchange={() => selectedMidiOutput.set($selectedMidiOutput)}
         >
           {#each $midiOutputs as output}
             <!-- <option value={output}>{output.manufacturer} {output.name}</option> -->

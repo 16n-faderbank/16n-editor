@@ -1,9 +1,13 @@
 <script lang="ts">
   import type { Control } from "$lib/types";
 
-  export let control: Control;
-  export let index: number;
-  export let disableValue = false;
+  interface Props {
+    control: Control;
+    index: number;
+    disableValue?: boolean;
+  }
+
+  let { control, index, disableValue = false }: Props = $props();
 </script>
 
 <dl class="config-column">
@@ -19,7 +23,7 @@
         {#if control.val !== undefined}
           <span class={control.val < 27 ? "lowvalue" : ""}>{control.val}</span>
         {/if}
-        <div class="bar" style="height: {control.val}px" />
+        <div class="bar" style="height: {control.val}px"></div>
       </div>
     </dd>
   {/if}

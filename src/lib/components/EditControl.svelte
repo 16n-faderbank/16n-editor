@@ -2,11 +2,14 @@
   import { editConfiguration } from "$lib/stores";
   import type { Control } from "$lib/types";
 
-  export let index: number;
-  export let editControl: Control;
+  interface Props {
+    index: number;
+    editControl: Control;
+  }
 
-  const possibleChannels = Array.from(Array(16).keys());
-  possibleChannels.forEach((c, i) => (possibleChannels[i] = c + 1));
+  let { index, editControl = $bindable() }: Props = $props();
+
+  const possibleChannels = Array.from({ length: 16 }, (_, i) => i + 1);
 
   const touchChannel = () => {
     // trigger reactivity
@@ -32,7 +35,7 @@
   <dt class="index">{index + 1}</dt>
   <dt>Channel</dt>
   <dd>
-    <select bind:value={editControl.channel} on:change={touchChannel}>
+    <select bind:value={editControl.channel} onchange={touchChannel}>
       {#each possibleChannels as channel}
         <option value={channel}>{channel}</option>
       {/each}
@@ -43,8 +46,8 @@
     <input
       type="number"
       bind:value={editControl.cc}
-      on:change={touchCC}
-      on:blur={touchCC}
+      onchange={touchCC}
+      onblur={touchCC}
       min="0"
       max="127"
     />

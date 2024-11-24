@@ -9,12 +9,12 @@
 </script>
 
 <div id="debugconsole">
-  <button on:click={toggleConsole}>
+  <button onclick={toggleConsole}>
     <Icon i="terminal" />
     Toggle debug console
   </button>
   <div hidden id="console" bind:this={debugConsole}>
-    <textarea cols="40" rows="8" id="current_config" />
+    <textarea cols="40" rows="8" id="current_config"></textarea>
   </div>
 </div>
 

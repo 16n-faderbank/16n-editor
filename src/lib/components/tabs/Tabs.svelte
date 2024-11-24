@@ -1,10 +1,15 @@
-<script context="module">
+<script module>
   export const TABS = {};
 </script>
 
-<script>
-  import { setContext, onDestroy } from "svelte";
+<script lang="ts">
+  import { setContext, onDestroy, type Snippet } from "svelte";
   import { writable } from "svelte/store";
+  interface Props {
+    children?: Snippet;
+  }
+
+  let { children }: Props = $props();
 
   const tabs = [];
   const panels = [];
@@ -50,5 +55,5 @@
 </script>
 
 <div class="tabs">
-  <slot />
+  {@render children?.()}
 </div>
