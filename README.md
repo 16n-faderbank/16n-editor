@@ -20,7 +20,7 @@ The result is a little more readable by most JS developers, and we gain a lot of
 ## Build Requirements
 
 - Node.js v16+
-- pnpm (npm is fine, but we prefer pnpm simply for disk-space reasons)
+- pnpm (preferred for performance, storage reasons.)
 
 ## Usage Requirements
 
