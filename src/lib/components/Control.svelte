@@ -15,13 +15,20 @@
   <dt>Channel</dt>
   <dd>{control.channel}</dd>
   <dt>CC</dt>
-  <dd>{control.cc}</dd>
+  <dd>
+    {control.cc}
+    {#if control.highResolution}
+      <span class="hires">+ {control.cc + 32}</span>
+    {/if}
+  </dd>
   {#if !disableValue}
     <dt>Value</dt>
     <dd class="display">
       <div class="inner">
         {#if control.val !== undefined}
-          <span class={control.val < 27 ? "lowvalue" : ""}>{control.val}</span>
+          <span class="controlval" class:lowvalue={control.val < 27}
+            >{control.val}</span
+          >
         {/if}
         <div class="bar" style="height: {control.val}px"></div>
       </div>
@@ -72,7 +79,7 @@
     width: 100%;
   }
 
-  span {
+  span.controlval {
     display: block;
     position: absolute;
     color: white;
@@ -85,5 +92,8 @@
   span.lowvalue {
     top: -20px;
     color: black;
+  }
+  span.hires {
+    opacity: 0.5;
   }
 </style>
