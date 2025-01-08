@@ -19,13 +19,13 @@ The result is a little more readable by most JS developers, and we gain a lot of
 
 ## Build Requirements
 
-- Node.js v16+
+- Node.js v22+ (LTS)
 - pnpm (preferred for performance, storage reasons.)
 
 ## Usage Requirements
 
 - As a WebMIDI app, you need a client that can support it. That basically means Chrome right now.
-- A 16n running firmware v2.0.0 or higher.
+- A 16n running firmware v2.0.0 or higher, or a 16nx running firmware v3.0.0 or higher
 
 ## Installation
 

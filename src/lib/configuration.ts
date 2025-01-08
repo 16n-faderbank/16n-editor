@@ -229,7 +229,7 @@ export const configFromSysexArray = (data: number[]) => {
 
 export const deviceForId = (id: number) => allKnownDevices[id];
 
-type Capability = "led" | "i2c" | "faderCalibration";
+type Capability = "led" | "i2c" | "faderCalibration" | "highResolution";
 
 export const deviceHasCapability = (
   config: ControllerConfiguration,
@@ -277,6 +277,7 @@ export const allKnownDevices = [
     capabilities: {
       i2c: true,
       led: true,
+      highResolution: true,
     },
   },
   {
@@ -285,6 +286,7 @@ export const allKnownDevices = [
     capabilities: {
       i2c: true,
       led: true,
+      highResolution: true,
     },
   },
 ];

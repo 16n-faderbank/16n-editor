@@ -18,6 +18,7 @@
     editMode,
     selectedMidiOutput,
   } from "$lib/stores";
+  import ExplainHiResMode from "$lib/components/ExplainHiResMode.svelte";
 
   let configDirty = $state(false);
 
@@ -91,6 +92,9 @@
           {/if}
         {/each}
       </div>
+      {#if device?.capabilities.highResolution}
+        <ExplainHiResMode />
+      {/if}
     </TabPanel>
 
     <TabPanel>
@@ -101,6 +105,9 @@
           {/if}
         {/each}
       </div>
+      {#if device?.capabilities.highResolution}
+        <ExplainHiResMode />
+      {/if}
     </TabPanel>
 
     <TabPanel>

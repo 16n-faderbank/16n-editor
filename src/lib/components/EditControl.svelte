@@ -1,5 +1,7 @@
 <script lang="ts">
   import { editConfiguration } from "$lib/stores";
+  import { deviceForId } from "$lib/configuration";
+
   import type { Control } from "$lib/types";
 
   interface Props {
@@ -8,6 +10,12 @@
   }
 
   let { index, editControl = $bindable() }: Props = $props();
+
+  let device = $derived(
+    $editConfiguration ? deviceForId($editConfiguration.deviceId) : null,
+  );
+
+  let maxCC = $derived(editControl.highResolution ? 127 - 32 : 127);
 
   const possibleChannels = Array.from({ length: 16 }, (_, i) => i + 1);
 
@@ -22,18 +30,28 @@
     if (parseInt(targ.value) < 0) {
       editControl.cc = 0;
     }
-    if (parseInt(targ.value) > 127) {
-      editControl.cc = 127;
+    if (parseInt(targ.value) > maxCC) {
+      editControl.cc = maxCC;
     }
 
     // trigger reactivity
     editConfiguration.set($editConfiguration);
   };
+
+  const touchHires = () => {
+    if (editControl.cc > maxCC) {
+      editControl.cc = maxCC;
+    }
+  };
+
+  const toggleHRMode = () => {
+    editControl.highResolution = !editControl.highResolution;
+  };
 </script>
 
 <dl class="config-column">
   <dt class="index">{index + 1}</dt>
-  <dt>Channel</dt>
+  <dt class="no-top-border">Channel</dt>
   <dd>
     <select bind:value={editControl.channel} onchange={touchChannel}>
       {#each possibleChannels as channel}
@@ -49,9 +67,22 @@
       onchange={touchCC}
       onblur={touchCC}
       min="0"
-      max="127"
+      max={maxCC}
     />
   </dd>
+  {#if device?.capabilities.highResolution}
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <dt class="hr-title" onclick={toggleHRMode}>High Resolution?</dt>
+    <dd>
+      <input
+        type="checkbox"
+        bind:checked={editControl.highResolution}
+        onchange={touchHires}
+        onblur={touchHires}
+      />
+    </dd>
+  {/if}
 </dl>
 
 <style>
@@ -64,6 +95,11 @@
     border-top: 1px solid #aaa;
     padding-top: 0.5rem;
     margin-right: 5px;
+    margin-bottom: 5px;
+  }
+
+  dt.no-top-border {
+    border-top: none;
   }
 
   dt.index {
@@ -72,14 +108,25 @@
     padding: 0.5rem 0;
   }
 
+  dt.hr-title {
+    cursor: pointer;
+  }
+
   dd {
     padding: 0 0 0.5rem 0;
-    border-bottom: 1px solid #aaa;
     margin: 0;
     margin-right: 5px;
   }
 
+  dl dd:last-child {
+    border-bottom: 1px solid #aaa;
+  }
   dd input:invalid {
     background: #f99;
+  }
+
+  select,
+  input[type="number"] {
+    width: 6ch;
   }
 </style>

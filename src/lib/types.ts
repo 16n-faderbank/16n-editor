@@ -2,6 +2,7 @@ export type Control = {
   channel: number;
   cc: number;
   val?: number;
+  highResolution?: boolean;
 };
 
 export type ControllerConfiguration = {
