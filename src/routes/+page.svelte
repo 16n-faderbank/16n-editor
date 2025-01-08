@@ -72,7 +72,7 @@
           {:else}
             <Viewing />
           {/if}
-          <p />
+          <p></p>
         {/if}
       {:else}
         <!-- webmidi compatible browser, but no device -->

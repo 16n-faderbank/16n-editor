@@ -8,12 +8,7 @@
     click: () => void;
   }
 
-  let {
-    label,
-    icon = "",
-    disabled = false,
-    click
-  }: Props = $props();
+  let { label, icon = "", disabled = false, click }: Props = $props();
 </script>
 
 <div class="button-wrapper">
