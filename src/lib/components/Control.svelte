@@ -18,7 +18,7 @@
   <dd>
     {control.cc}
     {#if control.highResolution}
-      <span class="hires">+ {control.cc + 32}</span>
+      <span class="hires">&amp; {control.cc + 32}</span>
     {/if}
   </dd>
   {#if !disableValue}
