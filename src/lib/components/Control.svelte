@@ -8,6 +8,12 @@
   }
 
   let { control, index, disableValue = false }: Props = $props();
+
+  let barHeight = $derived(
+    control.highResolution ? (control.val || 0) >> 7 : control.val,
+  );
+
+  let overUnderThreshold = $derived(control.highResolution ? 27 << 7 : 27);
 </script>
 
 <dl class="config-column">
@@ -26,11 +32,13 @@
     <dd class="display">
       <div class="inner">
         {#if control.val !== undefined}
-          <span class="controlval" class:lowvalue={control.val < 27}
+          <span
+            class="controlval"
+            class:lowvalue={control.val < overUnderThreshold}
             >{control.val}</span
           >
         {/if}
-        <div class="bar" style="height: {control.val}px"></div>
+        <div class="bar" style="height: {barHeight}px"></div>
       </div>
     </dd>
   {/if}

@@ -2,6 +2,8 @@ export type Control = {
   channel: number;
   cc: number;
   val?: number;
+  msb?: number;
+  lsb: number;
   highResolution?: boolean;
 };
 

@@ -143,11 +143,29 @@ const controllerMoved = (event: ControlChangeMessageEvent) => {
   const config = get(configuration);
   if (config) {
     config.usbControls.forEach((c: Control) => {
+      // Handling high-res is a bit painful.
+      // we need to catch if it's a channel OR if it's a high-res shadow channel
+      // then, we should set msb/lsb
+      // if the channel is high-res, we set val based on that.
       if (
-        c.channel == event.message.channel &&
-        c.cc == event.controller.number
+        event.message.channel == c.channel &&
+        event.controller.number == c.cc
       ) {
-        c.val = event.rawValue;
+        c.lsb = event.rawValue as number;
+      }
+
+      if (
+        c.highResolution &&
+        event.message.channel == c.channel &&
+        event.controller.number == c.cc + 32
+      ) {
+        c.msb = event.rawValue as number;
+      }
+
+      if (c.highResolution && c.msb) {
+        c.val = (c.msb << 7) + c.lsb;
+      } else {
+        c.val = c.lsb;
       }
     });
     configuration.set(config); // trigger reactivity
