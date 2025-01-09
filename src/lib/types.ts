@@ -19,4 +19,6 @@ export type ControllerConfiguration = {
   firmwareVersion: string;
   usbControls: Control[];
   trsControls: Control[];
+  usbHighResolution: boolean[];
+  trsHighResolution: boolean[];
 };
