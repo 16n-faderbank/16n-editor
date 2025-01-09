@@ -108,6 +108,7 @@
 
   dt.hr-title {
     cursor: pointer;
+    font-size: 0.75rem;
   }
 
   dd {
