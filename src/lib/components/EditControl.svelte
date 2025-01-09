@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { deviceHasCapability } from "$lib/configuration";
   import { editConfiguration } from "$lib/stores";
-  import { deviceForId, deviceHasCapability } from "$lib/configuration";
 
   import type { Control } from "$lib/types";
 
@@ -10,10 +10,6 @@
   }
 
   let { index, editControl = $bindable() }: Props = $props();
-
-  let device = $derived(
-    $editConfiguration ? deviceForId($editConfiguration.deviceId) : null,
-  );
 
   let maxCC = $derived(editControl.highResolution ? 127 - 32 : 127);
 
@@ -42,10 +38,12 @@
     if (editControl.cc > maxCC) {
       editControl.cc = maxCC;
     }
+    editConfiguration.set($editConfiguration);
   };
 
   const toggleHRMode = () => {
     editControl.highResolution = !editControl.highResolution;
+    editConfiguration.set($editConfiguration);
   };
 </script>
 
