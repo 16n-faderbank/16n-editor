@@ -11,7 +11,7 @@
 
   import { deviceForId, isEquivalent, toSysexArray } from "$lib/configuration";
   import { importConfig } from "$lib/import_export";
-  import { sendConfiguration } from "$lib/midi/sysex";
+  import { requestConfig, sendConfiguration } from "$lib/midi/sysex";
   import {
     configuration,
     editConfiguration,
@@ -55,6 +55,8 @@
     $configuration = $editConfiguration;
 
     $editMode = false;
+
+    requestConfig($selectedMidiOutput);
   };
 
   let device = $derived(
