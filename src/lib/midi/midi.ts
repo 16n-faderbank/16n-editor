@@ -151,7 +151,7 @@ const controllerMoved = (event: ControlChangeMessageEvent) => {
         event.message.channel == c.channel &&
         event.controller.number == c.cc
       ) {
-        c.lsb = event.rawValue as number;
+        c.msb = event.rawValue as number;
       }
 
       if (
@@ -159,13 +159,13 @@ const controllerMoved = (event: ControlChangeMessageEvent) => {
         event.message.channel == c.channel &&
         event.controller.number == c.cc + 32
       ) {
-        c.msb = event.rawValue as number;
+        c.lsb = event.rawValue as number;
       }
 
       if (c.highResolution && c.msb) {
         c.val = (c.msb << 7) + c.lsb;
       } else {
-        c.val = c.lsb;
+        c.val = c.msb;
       }
     });
     configuration.set(config); // trigger reactivity
