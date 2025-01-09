@@ -271,6 +271,8 @@ export const allKnownDevices = [
       led: true,
       faderCalibration: true,
     },
+    latestFirmwareVersion: "2.1.1",
+    firmwareUrl: "https://github.com/16n-faderbank/16n/releases/latest",
   },
   {
     name: "16n (LC)",
@@ -281,6 +283,8 @@ export const allKnownDevices = [
       faderCalibration: true,
     },
     sendShortMessages: true,
+    latestFirmwareVersion: "2.1.1",
+    firmwareUrl: "https://github.com/16n-faderbank/16n/releases/latest",
   },
   {
     name: "16rx",
@@ -290,6 +294,9 @@ export const allKnownDevices = [
       led: true,
       highResolution: "3.1.0",
     },
+    latestFirmwareVersion: "3.1.0",
+    firmwareUrl:
+      "https://github.com/16n-faderbank/16next_firmware/releases/latest",
   },
   {
     name: "16nx",
@@ -299,5 +306,8 @@ export const allKnownDevices = [
       led: true,
       highResolution: "3.1.0",
     },
+    latestFirmwareVersion: "3.1.0",
+    firmwareUrl:
+      "https://github.com/16n-faderbank/16next_firmware/releases/latest",
   },
 ];
