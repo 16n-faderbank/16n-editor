@@ -31,7 +31,8 @@ export const isEquivalent = (
     const otherControl = configB.usbControls[i];
     if (
       control.channel != otherControl.channel ||
-      control.cc != otherControl.cc
+      control.cc != otherControl.cc ||
+      control.highResolution != otherControl.highResolution
     ) {
       usbEquivalent = false;
     }
@@ -41,7 +42,8 @@ export const isEquivalent = (
     const otherControl = configB.trsControls[i];
     if (
       control.channel != otherControl.channel ||
-      control.cc != otherControl.cc
+      control.cc != otherControl.cc ||
+      control.highResolution != otherControl.highResolution
     ) {
       trsEquivalent = false;
     }
@@ -91,6 +93,20 @@ export const toSysexArray = (config: ControllerConfiguration) => {
   config.trsControls.forEach((control, index) => {
     array[index + trsChannelOffset] = control.channel;
     array[index + trsControlOffset] = control.cc;
+  });
+
+  const usbHighResOffset = 84;
+  const trsHighResOffset = 87;
+
+  const usbHighresData = packHiresConfig(config.usbControls);
+  const trsHighresData = packHiresConfig(config.trsControls);
+
+  usbHighresData.forEach((d, index) => {
+    array[usbHighResOffset + index] = usbHighresData[index];
+  });
+
+  trsHighresData.forEach((d, index) => {
+    array[trsHighResOffset + index] = trsHighresData[index];
   });
 
   return array;
@@ -213,6 +229,20 @@ export const configFromSysexArray = (data: number[]) => {
 
   usbControls.forEach((c) => (c.val = 0));
 
+  const usbHiresConfig = data.slice(81 + offset, 84 + offset);
+  const usbHighResolution = unpackHiresConfig(usbHiresConfig);
+
+  usbControls.forEach((control, i) => {
+    control.highResolution = usbHighResolution[i];
+  });
+
+  const trsHiresConfig = data.slice(84 + offset, 87 + offset);
+  const trsHighResolution = unpackHiresConfig(trsHiresConfig);
+
+  trsControls.forEach((control, i) => {
+    control.highResolution = trsHighResolution[i];
+  });
+
   return {
     ledOn,
     ledFlash,
@@ -225,7 +255,35 @@ export const configFromSysexArray = (data: number[]) => {
     i2cLeader,
     faderMin,
     faderMax,
+    usbHighResolution,
+    trsHighResolution,
   } as ControllerConfiguration;
+};
+
+const unpackHiresConfig = (hiresConfig: number[]) => {
+  let numericValue = 0;
+  for (let i = 0; i < 3; i++) {
+    const mask = i == 2 ? 0x03 : 0x7f;
+    numericValue |= (hiresConfig[i] & mask) << (7 * i);
+  }
+
+  const booleanResult: boolean[] = [];
+  for (let i = 0; i < 16; i++) {
+    booleanResult.push((numericValue & (1 << i)) !== 0);
+  }
+
+  return booleanResult;
+};
+
+const packHiresConfig = (controls: Control[]) => {
+  let value = 0;
+  controls.forEach((control, i) => {
+    if (control.highResolution) {
+      value |= 1 << i;
+    }
+  });
+
+  return [value & 0x7f, (value >> 7) & 0x7f, (value >> 14) & 0x03];
 };
 
 export const deviceForId = (id: number) => allKnownDevices[id];
