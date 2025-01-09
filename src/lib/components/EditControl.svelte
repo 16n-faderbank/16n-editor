@@ -1,6 +1,6 @@
 <script lang="ts">
   import { editConfiguration } from "$lib/stores";
-  import { deviceForId } from "$lib/configuration";
+  import { deviceForId, deviceHasCapability } from "$lib/configuration";
 
   import type { Control } from "$lib/types";
 
@@ -70,7 +70,7 @@
       max={maxCC}
     />
   </dd>
-  {#if device?.capabilities.highResolution}
+  {#if $editConfiguration && deviceHasCapability($editConfiguration, "highResolution")}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <dt class="hr-title" onclick={toggleHRMode}>High Resolution?</dt>

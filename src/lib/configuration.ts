@@ -1,4 +1,5 @@
 import { logger } from "$lib/logger";
+import { gte } from "semver";
 import type { Control, ControllerConfiguration } from "$lib/types";
 
 export const isEquivalent = (
@@ -236,7 +237,17 @@ export const deviceHasCapability = (
   capability: Capability,
 ) => {
   const device = deviceForId(config.deviceId);
-  return !!device.capabilities[capability];
+  if (!device) return;
+  if (!device.capabilities[capability]) {
+    return false;
+  }
+
+  if (device.capabilities[capability] === true) {
+    return true;
+  }
+
+  // return !!device.capabilities[capability];
+  return gte(config.firmwareVersion, device.capabilities[capability]);
 };
 
 export const allKnownDevices = [
@@ -277,7 +288,7 @@ export const allKnownDevices = [
     capabilities: {
       i2c: true,
       led: true,
-      highResolution: true,
+      highResolution: "3.1.0",
     },
   },
   {
@@ -286,7 +297,7 @@ export const allKnownDevices = [
     capabilities: {
       i2c: true,
       led: true,
-      highResolution: true,
+      highResolution: "3.1.0",
     },
   },
 ];
