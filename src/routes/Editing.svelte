@@ -17,64 +17,62 @@
   } from "$lib/configuration";
   import { importConfig } from "$lib/import_export";
   import { requestConfig, sendConfiguration } from "$lib/midi/sysex";
-  import {
-    configuration,
-    editConfiguration,
-    editMode,
-    selectedMidiOutput,
-  } from "$lib/stores";
+  import { configuration } from "$lib/state/configuration.svelte";
+  import { midiState } from "$lib/state/midi.svelte";
   import ExplainHiResMode from "$lib/components/ExplainHiResMode.svelte";
 
   let configDirty = $state(false);
 
-  editConfiguration.subscribe((c) => {
-    if (c && $configuration) {
-      configDirty = !isEquivalent(c, $configuration);
+  $effect(() => {
+    if (configuration.editing && configuration.current) {
+      configDirty = !isEquivalent(configuration.editing, configuration.current);
     }
   });
 
   const cancelEditMode = () => {
-    $editMode = false;
+    configuration.editMode = false;
   };
 
   const doImportConfig = () => {
-    if ($editConfiguration && $configuration) {
-      importConfig($editConfiguration, $configuration);
+    if (configuration.editing && configuration.current) {
+      importConfig(configuration.editing, configuration.current);
     }
   };
 
   const transmitConfig = () => {
-    if (!$editConfiguration) {
+    if (!configuration.editing) {
       console.error("No edit configuration found");
       return;
     }
-    if (!$selectedMidiOutput) {
+    if (!midiState.selectedOutput) {
       console.error("No selected MIDI output found");
       return;
     }
-    const sysexArray = toSysexArray($editConfiguration);
+    const sysexArray = toSysexArray(configuration.editing);
     logger("Sending sysex:", sysexArray);
 
-    sendConfiguration($editConfiguration, $selectedMidiOutput);
+    sendConfiguration(configuration.editing, midiState.selectedOutput);
 
-    $configuration = $editConfiguration;
+    configuration.current = structuredClone(
+      $state.snapshot(configuration.editing),
+    );
 
-    $editMode = false;
+    configuration.editMode = false;
 
-    requestConfig($selectedMidiOutput);
+    requestConfig(midiState.selectedOutput);
   };
 
   let device = $derived(
-    $configuration ? deviceForId($configuration.deviceId) : null,
+    configuration.current ? deviceForId(configuration.current.deviceId) : null,
   );
 
   let deviceSupportsHighResolution = $derived(
-    $editConfiguration &&
+    configuration.editing &&
       device &&
       deviceHasCapability(
         device,
         "highResolution",
-        $editConfiguration.firmwareVersion,
+        configuration.editing.firmwareVersion,
       ),
   );
 </script>
@@ -90,20 +88,20 @@
   />
 </Subhead>
 
-{#if $editConfiguration}
+{#if configuration.editing}
   <Tabs>
     <TabList>
       <Tab>USB</Tab>
       <Tab>TRS Jack</Tab>
       <Tab>Device Options</Tab>
-      {#if $configuration && semverGte($configuration.firmwareVersion, "2.1.0")}
+      {#if configuration.current && semverGte(configuration.current.firmwareVersion, "2.1.0")}
         <Tab>Factory Reset</Tab>
       {/if}
     </TabList>
 
     <TabPanel>
       <div id="controls">
-        {#each $editConfiguration.usbControls as editControl, index}
+        {#each configuration.editing.usbControls as editControl, index}
           {#if device && index < device.controlCount}
             <EditControl {editControl} {index} />
           {/if}
@@ -116,7 +114,7 @@
 
     <TabPanel>
       <div id="controls">
-        {#each $editConfiguration.trsControls as editControl, index}
+        {#each configuration.editing.trsControls as editControl, index}
           {#if device && index < device.controlCount}
             <EditControl {editControl} {index} />
           {/if}
@@ -131,7 +129,7 @@
       <DeviceOptions />
     </TabPanel>
 
-    {#if $configuration && semverGte($configuration.firmwareVersion, "2.1.0")}
+    {#if configuration.current && semverGte(configuration.current.firmwareVersion, "2.1.0")}
       <TabPanel>
         <FactoryReset on:message />
       </TabPanel>

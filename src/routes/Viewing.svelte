@@ -4,31 +4,33 @@
   import Subhead from "$lib/components/Subhead.svelte";
   import { Tab, TabList, TabPanel, Tabs } from "$lib/components/tabs";
 
-  import { configuration, editMode, editConfiguration } from "$lib/stores";
+  import { configuration } from "$lib/state/configuration.svelte";
   import { exportConfig } from "$lib/import_export";
   import { deviceForId } from "$lib/configuration";
   import { logger } from "$lib/logger";
 
   const doExportConfig = () => {
-    if ($configuration) {
-      exportConfig($configuration);
+    if (configuration.current) {
+      exportConfig(configuration.current);
     }
   };
 
   const doEditMode = () => {
     logger("Do edit mode");
-    $editMode = true;
-    if ($configuration) {
-      $editConfiguration = structuredClone($state.snapshot($configuration));
+    configuration.editMode = true;
+    if (configuration.current) {
+      configuration.editing = structuredClone(
+        $state.snapshot(configuration.current),
+      );
     }
   };
 
   let device = $derived(
-    $configuration ? deviceForId($configuration.deviceId) : null,
+    configuration.current ? deviceForId(configuration.current.deviceId) : null,
   );
 </script>
 
-{#if $configuration}
+{#if configuration.current}
   <Subhead title="Current Configuration">
     <Button
       label="Export current config"
@@ -45,7 +47,7 @@
     </TabList>
     <TabPanel>
       <div id="controls">
-        {#each $configuration.usbControls as control, index}
+        {#each configuration.current.usbControls as control, index}
           {#if device && index < device.controlCount}
             <Control {control} {index} />
           {/if}
@@ -55,7 +57,7 @@
 
     <TabPanel>
       <div id="controls">
-        {#each $configuration.trsControls as control, index}
+        {#each configuration.current.trsControls as control, index}
           {#if device && index < device.controlCount}
             <Control {control} {index} disableValue={true} />
           {/if}

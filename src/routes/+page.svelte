@@ -6,16 +6,16 @@
   import { onMount } from "svelte";
   import { WebMidi } from "webmidi";
 
-  import { onMIDISuccess } from "$lib/midi/midi";
+  import {
+    onMIDISuccess,
+    listenForSysex,
+    listenForCC,
+    doRequestConfig,
+  } from "$lib/midi/midi.svelte";
   import { sendFactoryResetRequest } from "$lib/midi/sysex";
 
-  import {
-    configuration,
-    controllerMightNeedFactoryReset,
-    editMode,
-    selectedMidiOutput,
-    webMidiEnabled,
-  } from "$lib/stores";
+  import { configuration } from "$lib/state/configuration.svelte";
+  import { midiState } from "$lib/state/midi.svelte";
 
   import Button from "$lib/components/Button.svelte";
   import DeviceDetails from "$lib/components/DeviceDetails.svelte";
@@ -35,9 +35,27 @@
     }
   });
 
+  // subscribe to changing of midi state
+  $effect(() => {
+    if (midiState.selectedInput) {
+      midiState.inputs.forEach((input) => {
+        input.removeListener();
+      });
+      listenForCC(midiState.selectedInput);
+      listenForSysex(midiState.selectedInput);
+      configuration.current = null;
+      doRequestConfig();
+    }
+
+    if (midiState.selectedOutput) {
+      configuration.current = null;
+      doRequestConfig();
+    }
+  });
+
   const transmitFactoryReset = () => {
-    if ($selectedMidiOutput) {
-      sendFactoryResetRequest($selectedMidiOutput);
+    if (midiState.selectedOutput) {
+      sendFactoryResetRequest(midiState.selectedOutput);
     }
   };
 </script>
@@ -49,9 +67,9 @@
   </div>
 
   <div id="inner">
-    {#if $webMidiEnabled}
-      {#if $configuration}
-        {#if $controllerMightNeedFactoryReset && semverGte($configuration.firmwareVersion, "2.1.0")}
+    {#if midiState.webMidiEnabled}
+      {#if configuration.current}
+        {#if configuration.controllerMightNeedFactoryReset && semverGte(configuration.current.firmwareVersion, "2.1.0")}
           <!-- webmidi enabled, config not receiving, despite having a firmware that should work -->
           <div class="notice">
             <p>
@@ -67,7 +85,7 @@
           </div>
         {:else}
           <!-- webmidi enabled, config setup, we're good to edit -->
-          {#if $editMode}
+          {#if configuration.editMode}
             <Editing />
           {:else}
             <Viewing />

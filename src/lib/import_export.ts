@@ -5,7 +5,7 @@ import {
   isEquivalent,
   updateFromJson,
 } from "$lib/configuration.js";
-import { editConfiguration } from "$lib/stores";
+import { configuration } from "./state/configuration.svelte";
 import type { ControllerConfiguration } from "$lib/types";
 
 export const importConfig = (
@@ -34,8 +34,9 @@ export const importConfig = (
           alert(invalidConfig);
           return;
         } else {
-          editConfiguration.update(() =>
-            updateFromJson(currentEditConfig, newConfigData),
+          configuration.editing = updateFromJson(
+            currentEditConfig,
+            newConfigData,
           );
           if (isEquivalent(currentEditConfig, currentConfig)) {
             alert(
