@@ -19,7 +19,7 @@
     logger("Do edit mode");
     $editMode = true;
     if ($configuration) {
-      $editConfiguration = structuredClone($configuration);
+      $editConfiguration = structuredClone($state.snapshot($configuration));
     }
   };
 
