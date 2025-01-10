@@ -9,7 +9,12 @@
   import Subhead from "$lib/components/Subhead.svelte";
   import { Tab, TabList, TabPanel, Tabs } from "$lib/components/tabs";
 
-  import { deviceForId, isEquivalent, toSysexArray } from "$lib/configuration";
+  import {
+    deviceForId,
+    deviceHasCapability,
+    isEquivalent,
+    toSysexArray,
+  } from "$lib/configuration";
   import { importConfig } from "$lib/import_export";
   import { requestConfig, sendConfiguration } from "$lib/midi/sysex";
   import {
@@ -62,6 +67,16 @@
   let device = $derived(
     $configuration ? deviceForId($configuration.deviceId) : null,
   );
+
+  let deviceSupportsHighResolution = $derived(
+    $editConfiguration &&
+      device &&
+      deviceHasCapability(
+        device,
+        "highResolution",
+        $editConfiguration.firmwareVersion,
+      ),
+  );
 </script>
 
 <Subhead title="Edit Configuration">
@@ -94,7 +109,7 @@
           {/if}
         {/each}
       </div>
-      {#if device?.capabilities.highResolution}
+      {#if deviceSupportsHighResolution}
         <ExplainHiResMode />
       {/if}
     </TabPanel>
@@ -107,7 +122,7 @@
           {/if}
         {/each}
       </div>
-      {#if device?.capabilities.highResolution}
+      {#if deviceSupportsHighResolution}
         <ExplainHiResMode />
       {/if}
     </TabPanel>

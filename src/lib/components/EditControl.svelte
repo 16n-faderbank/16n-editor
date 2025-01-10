@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { deviceHasCapability } from "$lib/configuration";
+  import { deviceHasCapability, deviceForId } from "$lib/configuration";
   import { editConfiguration } from "$lib/stores";
 
   import type { Control } from "$lib/types";
@@ -12,6 +12,20 @@
   let { index, editControl = $bindable() }: Props = $props();
 
   let maxCC = $derived(editControl.highResolution ? 127 - 32 : 127);
+
+  let device = $derived(
+    $editConfiguration ? deviceForId($editConfiguration.deviceId) : null,
+  );
+
+  let deviceSupportsHighResolution = $derived(
+    device &&
+      $editConfiguration &&
+      deviceHasCapability(
+        device,
+        "highResolution",
+        $editConfiguration.firmwareVersion,
+      ),
+  );
 
   const possibleChannels = Array.from({ length: 16 }, (_, i) => i + 1);
 
@@ -68,7 +82,7 @@
       max={maxCC}
     />
   </dd>
-  {#if $editConfiguration && deviceHasCapability($editConfiguration, "highResolution")}
+  {#if deviceSupportsHighResolution}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <dt class="hr-title" onclick={toggleHRMode}>High Resolution?</dt>

@@ -3,7 +3,12 @@ import { gte } from "semver";
 import { logger } from "$lib/logger";
 import allKnownDevices from "./devices.json";
 
-import type { Control, ControllerConfiguration } from "$lib/types";
+import type {
+  Control,
+  ControllerConfiguration,
+  Device,
+  DeviceCapability,
+} from "$lib/types";
 
 export const isEquivalent = (
   configA: ControllerConfiguration,
@@ -100,7 +105,13 @@ export const toSysexArray = (config: ControllerConfiguration) => {
 
   // if you support high-res, we can actually append this to the end of an array;
 
-  if (deviceHasCapability(config, "highResolution")) {
+  if (
+    deviceHasCapability(
+      deviceForId(config.deviceId),
+      "highResolution",
+      versionArray.join("."),
+    )
+  ) {
     const usbHighResOffset = 84;
     const trsHighResOffset = 87;
 
@@ -236,19 +247,29 @@ export const configFromSysexArray = (data: number[]) => {
 
   usbControls.forEach((c) => (c.val = 0));
 
-  const usbHiresConfig = data.slice(81 + offset, 84 + offset);
-  const usbHighResolution = unpackHiresConfig(usbHiresConfig);
+  const device = deviceForId(deviceId);
 
-  usbControls.forEach((control, i) => {
-    control.highResolution = usbHighResolution[i];
-  });
+  let usbHighResolution = Array.from(Array(16)).map(() => false);
+  let trsHighResolution = Array.from(Array(16)).map(() => false);
 
-  const trsHiresConfig = data.slice(84 + offset, 87 + offset);
-  const trsHighResolution = unpackHiresConfig(trsHiresConfig);
+  if (
+    device &&
+    deviceHasCapability(device, "highResolution", firmwareVersion)
+  ) {
+    const usbHiresConfig = data.slice(81 + offset, 84 + offset);
+    usbHighResolution = unpackHiresConfig(usbHiresConfig);
 
-  trsControls.forEach((control, i) => {
-    control.highResolution = trsHighResolution[i];
-  });
+    usbControls.forEach((control, i) => {
+      control.highResolution = usbHighResolution[i];
+    });
+
+    const trsHiresConfig = data.slice(84 + offset, 87 + offset);
+    trsHighResolution = unpackHiresConfig(trsHiresConfig);
+
+    trsControls.forEach((control, i) => {
+      control.highResolution = trsHighResolution[i];
+    });
+  }
 
   return {
     ledOn,
@@ -295,13 +316,11 @@ const packHiresConfig = (controls: Control[]) => {
 
 export const deviceForId = (id: number) => allKnownDevices[id];
 
-type Capability = "led" | "i2c" | "faderCalibration" | "highResolution";
-
 export const deviceHasCapability = (
-  config: ControllerConfiguration,
-  capability: Capability,
+  device: Device,
+  capability: DeviceCapability,
+  firmwareVersion: string,
 ) => {
-  const device = deviceForId(config.deviceId);
   if (!device) return;
   if (!device.capabilities[capability]) {
     return false;
@@ -311,5 +330,5 @@ export const deviceHasCapability = (
     return true;
   }
 
-  return gte(config.firmwareVersion, device.capabilities[capability]);
+  return gte(firmwareVersion, device.capabilities[capability]);
 };

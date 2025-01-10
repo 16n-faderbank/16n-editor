@@ -22,3 +22,18 @@ export type ControllerConfiguration = {
   usbHighResolution: boolean[];
   trsHighResolution: boolean[];
 };
+
+export type DeviceCapability =
+  | "led"
+  | "i2c"
+  | "faderCalibration"
+  | "highResolution";
+
+export type Device = {
+  name: string;
+  controlCount: number;
+  capabilities: Partial<Record<DeviceCapability, string | boolean>>;
+  sendShortMessages?: boolean;
+  latestFirmwareVersion?: string;
+  firmwareUrl?: string;
+};

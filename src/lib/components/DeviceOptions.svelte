@@ -4,7 +4,9 @@
   import { configuration, editConfiguration } from "$lib/stores";
 
   import CheckOption from "$lib/components/CheckOption.svelte";
-  import { deviceHasCapability } from "$lib/configuration";
+  import { deviceHasCapability, deviceForId } from "$lib/configuration";
+
+  let device = $derived(deviceForId($configuration?.deviceId));
 
   const touchControl = () => {
     editConfiguration.set($editConfiguration);
@@ -12,7 +14,7 @@
 </script>
 
 {#if $configuration && $editConfiguration}
-  {#if deviceHasCapability($configuration, "led")}
+  {#if deviceHasCapability(device, "led", $configuration.firmwareVersion)}
     <CheckOption bind:checked={$editConfiguration.ledOn}
       >LED permanently on when powered</CheckOption
     >
@@ -32,7 +34,7 @@
     </CheckOption>
   {/if}
 
-  {#if deviceHasCapability($configuration, "faderCalibration")}
+  {#if deviceHasCapability(device, "faderCalibration", $configuration.firmwareVersion)}
     <hr />
     <h3>Fader Minimum/Maximum calibration</h3>
     <div>
@@ -68,7 +70,7 @@
     </p>
   {/if}
 
-  {#if deviceHasCapability($configuration, "i2c")}
+  {#if deviceHasCapability(device, "i2c", $configuration.firmwareVersion)}
     <hr />
     <h3>I2C Leader/Follower</h3>
     <select bind:value={$editConfiguration.i2cLeader} onchange={touchControl}>
