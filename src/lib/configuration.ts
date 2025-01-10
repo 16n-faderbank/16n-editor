@@ -1,5 +1,8 @@
-import { logger } from "$lib/logger";
 import { gte } from "semver";
+
+import { logger } from "$lib/logger";
+import allKnownDevices from "./devices.json";
+
 import type { Control, ControllerConfiguration } from "$lib/types";
 
 export const isEquivalent = (
@@ -53,7 +56,7 @@ export const isEquivalent = (
 };
 
 export const toSysexArray = (config: ControllerConfiguration) => {
-  const array = Array.from({ length: 84 }, () => 0);
+  const array = Array.from({ length: 84 }, () => 0); // 84 is our _minimum_ length...
   const versionArray = config.firmwareVersion
     .trim()
     .split(".")
@@ -95,19 +98,23 @@ export const toSysexArray = (config: ControllerConfiguration) => {
     array[index + trsControlOffset] = control.cc;
   });
 
-  const usbHighResOffset = 84;
-  const trsHighResOffset = 87;
+  // if you support high-res, we can actually append this to the end of an array;
 
-  const usbHighresData = packHiresConfig(config.usbControls);
-  const trsHighresData = packHiresConfig(config.trsControls);
+  if (deviceHasCapability(config, "highResolution")) {
+    const usbHighResOffset = 84;
+    const trsHighResOffset = 87;
 
-  usbHighresData.forEach((d, index) => {
-    array[usbHighResOffset + index] = usbHighresData[index];
-  });
+    const usbHighresData = packHiresConfig(config.usbControls);
+    const trsHighresData = packHiresConfig(config.trsControls);
 
-  trsHighresData.forEach((d, index) => {
-    array[trsHighResOffset + index] = trsHighresData[index];
-  });
+    usbHighresData.forEach((d, index) => {
+      array[usbHighResOffset + index] = usbHighresData[index];
+    });
+
+    trsHighresData.forEach((d, index) => {
+      array[trsHighResOffset + index] = trsHighresData[index];
+    });
+  }
 
   return array;
 };
@@ -306,65 +313,3 @@ export const deviceHasCapability = (
 
   return gte(config.firmwareVersion, device.capabilities[capability]);
 };
-
-export const allKnownDevices = [
-  {
-    name: "unknown",
-    controlCount: 0,
-    capabilities: {},
-  },
-  {
-    name: "Oxion development board",
-    controlCount: 4,
-    capabilities: {
-      led: true,
-    },
-  },
-  {
-    name: "16n",
-    controlCount: 16,
-    capabilities: {
-      i2c: true,
-      led: true,
-      faderCalibration: true,
-    },
-    latestFirmwareVersion: "2.1.1",
-    firmwareUrl: "https://github.com/16n-faderbank/16n/releases/latest",
-  },
-  {
-    name: "16n (LC)",
-    controlCount: 16,
-    capabilities: {
-      i2c: true,
-      led: true,
-      faderCalibration: true,
-    },
-    sendShortMessages: true,
-    latestFirmwareVersion: "2.1.1",
-    firmwareUrl: "https://github.com/16n-faderbank/16n/releases/latest",
-  },
-  {
-    name: "16rx",
-    controlCount: 16,
-    capabilities: {
-      i2c: true,
-      led: true,
-      highResolution: "3.1.0",
-    },
-    latestFirmwareVersion: "3.1.0",
-    firmwareUrl:
-      "https://github.com/16n-faderbank/16next_firmware/releases/latest",
-  },
-  {
-    name: "16nx",
-    controlCount: 16,
-    capabilities: {
-      i2c: true,
-      led: true,
-      highResolution: "3.1.0",
-    },
-    latestFirmwareVersion: "3.1.0",
-    firmwareUrl:
-      "https://github.com/16n-faderbank/16next_firmware/releases/latest",
-  },
-];
