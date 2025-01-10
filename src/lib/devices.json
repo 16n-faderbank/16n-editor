@@ -1,0 +1,59 @@
+[
+  {
+    "name": "unknown",
+    "controlCount": 0,
+    "capabilities": {}
+  },
+  {
+    "name": "Oxion development board",
+    "controlCount": 4,
+    "capabilities": {
+      "led": true
+    }
+  },
+  {
+    "name": "16n",
+    "controlCount": 16,
+    "capabilities": {
+      "i2c": true,
+      "led": true,
+      "faderCalibration": true
+    },
+    "latestFirmwareVersion": "2.1.1",
+    "firmwareUrl": "https://github.com/16n-faderbank/16n/releases/latest"
+  },
+  {
+    "name": "16n (LC)",
+    "controlCount": 16,
+    "capabilities": {
+      "i2c": true,
+      "led": true,
+      "faderCalibration": true
+    },
+    "sendShortMessages": true,
+    "latestFirmwareVersion": "2.1.1",
+    "firmwareUrl": "https://github.com/16n-faderbank/16n/releases/latest"
+  },
+  {
+    "name": "16rx",
+    "controlCount": 16,
+    "capabilities": {
+      "i2c": true,
+      "led": true,
+      "highResolution": "3.1.0"
+    },
+    "latestFirmwareVersion": "3.0.3",
+    "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
+  },
+  {
+    "name": "16nx",
+    "controlCount": 16,
+    "capabilities": {
+      "i2c": true,
+      "led": true,
+      "highResolution": "3.1.0"
+    },
+    "latestFirmwareVersion": "3.0.3",
+    "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
+  }
+]
