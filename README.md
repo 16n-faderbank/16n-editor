@@ -76,24 +76,31 @@ Code linting is handled with ESLint, and code must meet the Prettier formatting 
 - `src/lib/configuration.ts` is a module exporting a set of functions for parsing and processing configuration data - generating a configuration POJO from a sysex array, comparing two configuration POJOs to see if they are identical.
 - `src/lib/import_export.ts` exports functions to request a user for a JSON file and load it as a config - and to take the current config and offer it as a downloadable file. (These functions are used by DOM element button components).
 - `src/lib/logger.ts` is a convenience function to log items to the console in development mode.
-- `src/lib/stores.ts` exports the various stores that will be used throughout the application (see later)
+- `src/lib/state` contains the various global reactive state objects that will be used throughout the application (see later)
 - `src/lib/types.ts` exports custom types used within the application: notably, individual `Control` items, and an entire `ControllerConfiguration`
 - `src/lib/midi/midi.ts` exports all the necessary functions to listen to MIDI ports as they connect/disconnect, request 16n configs from appropriate devices, and listen to individual events from the connected devices.
 - `src/lib/midi/sysex.ts` exports all the necessary functions to send the various System Exclusive messages a 16n supports.
 
-## Stores
+## State
 
-Svelte uses stores to store state and react to state changes. `src/lib/stores.ts` contains all the stores the application uses. My preferred style, in a single-user, client-only application is just to write to stores directly whenever necessary.
+We previously used Svelte Stores to store state and react to state change; as of Editor v2.1.0, we now use reactive state objects to do so.
 
-There are a number of stores exported that are used throughout the application:
+`src/lib/state` contains two main `.svelte.ts` files for the two types of reactive data we want to know about: stuff to do with controller configuration, and stuff to do with MIDI I/O.
 
-- `configuration` describes the current Configuration being shown in Viewing mode.
-- `controllerMightNeedFactoryReset` represents if the current 16n isn't quite configured right.
-- `editConfiguration` is the current configuration being _edited_ in Editing mode.
-- `editMode` is a boolean representing if the editor is in Editing mode or not.
-- `midiInputs` and `midiOutputs` describes the currently connected MIDI input/output ports.
-- `selectedMidiInput` and `selectedMidiOutput` represent the actual port that's used to talk to a 16n.
-- `webMidiEnabled` is a boolean representing if the current browser supports WebMidi.
+Inside the `configuration` stateful object, exported by `src/lib/state/configuration.svelte.ts`, there are a few key sub-objects:
+
+- `configuration.current` describes the current Configuration being shown in Viewing mode.
+- `configuration.controllerMightNeedFactoryReset` represents if the current 16n isn't quite configured right.
+- `configuration.editing` is the current configuration being _edited_ in Editing mode.
+- `configuration.editMode` is a boolean representing if the editor is in Editing mode or not.
+
+Inside the `midiState` stateful object, exported by `src/lib/state/midi.svelte.ts`, are:
+
+- `midiState.inputs` and `midiState.outputs` describes the currently connected MIDI input/output ports.
+- `midiState.selectedInput` and `midiState.selectedOutput` represent the actual port that's used to talk to a 16n.
+- `midiState.webMidiEnabled` is a boolean representing if the current browser supports WebMidi.
+
+Reactive state can be used both in Svelte components and in `.svelte.ts` files.
 
 ## Icons
 

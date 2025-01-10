@@ -2,21 +2,24 @@
   import Button from "$lib/components/Button.svelte";
   import { logger } from "$lib/logger";
   import { requestConfig, sendFactoryResetRequest } from "$lib/midi/sysex";
-  import { editMode, selectedMidiOutput } from "$lib/stores";
+  import { midiState } from "$lib/state/midi.svelte";
+  import { configuration } from "$lib/state/configuration.svelte";
 
   const confirmMessage =
     "Confirm that you wish to reset your controller configuration to the default values. You will lose any configuration stored on the controller.";
 
   const transmitFactoryReset = () => {
-    if (confirm(confirmMessage)) {
+    if (midiState.selectedOutput && confirm(confirmMessage)) {
       logger("Sending factory reset request");
 
-      $editMode = false;
+      configuration.editMode = false;
 
-      sendFactoryResetRequest($selectedMidiOutput);
+      sendFactoryResetRequest(midiState.selectedOutput);
 
       setTimeout(() => {
-        requestConfig($selectedMidiOutput);
+        if (midiState.selectedOutput) {
+          requestConfig(midiState.selectedOutput);
+        }
       }, 50);
     }
   };

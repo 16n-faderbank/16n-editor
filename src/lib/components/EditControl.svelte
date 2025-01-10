@@ -1,6 +1,6 @@
 <script lang="ts">
   import { deviceHasCapability, deviceForId } from "$lib/configuration";
-  import { editConfiguration } from "$lib/stores";
+  import { configuration } from "$lib/state/configuration.svelte";
 
   import type { Control } from "$lib/types";
 
@@ -14,25 +14,20 @@
   let maxCC = $derived(editControl.highResolution ? 127 - 32 : 127);
 
   let device = $derived(
-    $editConfiguration ? deviceForId($editConfiguration.deviceId) : null,
+    configuration.editing ? deviceForId(configuration.editing.deviceId) : null,
   );
 
   let deviceSupportsHighResolution = $derived(
     device &&
-      $editConfiguration &&
+      configuration.editing &&
       deviceHasCapability(
         device,
         "highResolution",
-        $editConfiguration.firmwareVersion,
+        configuration.editing.firmwareVersion,
       ),
   );
 
   const possibleChannels = Array.from({ length: 16 }, (_, i) => i + 1);
-
-  const touchChannel = () => {
-    // trigger reactivity
-    editConfiguration.set($editConfiguration);
-  };
 
   const touchCC = (e: Event) => {
     const targ = e.target as HTMLInputElement;
@@ -43,21 +38,16 @@
     if (parseInt(targ.value) > maxCC) {
       editControl.cc = maxCC;
     }
-
-    // trigger reactivity
-    editConfiguration.set($editConfiguration);
   };
 
   const touchHires = () => {
     if (editControl.cc > maxCC) {
       editControl.cc = maxCC;
     }
-    editConfiguration.set($editConfiguration);
   };
 
   const toggleHRMode = () => {
     editControl.highResolution = !editControl.highResolution;
-    editConfiguration.set($editConfiguration);
   };
 </script>
 
@@ -65,7 +55,7 @@
   <dt class="index">{index + 1}</dt>
   <dt class="no-top-border">Channel</dt>
   <dd>
-    <select bind:value={editControl.channel} onchange={touchChannel}>
+    <select bind:value={editControl.channel}>
       {#each possibleChannels as channel}
         <option value={channel}>{channel}</option>
       {/each}

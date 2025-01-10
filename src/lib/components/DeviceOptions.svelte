@@ -1,40 +1,38 @@
 <script lang="ts">
   import { gte as semverGte } from "semver";
 
-  import { configuration, editConfiguration } from "$lib/stores";
+  import { configuration } from "$lib/state/configuration.svelte";
 
   import CheckOption from "$lib/components/CheckOption.svelte";
   import { deviceHasCapability, deviceForId } from "$lib/configuration";
 
-  let device = $derived(deviceForId($configuration?.deviceId));
-
-  const touchControl = () => {
-    editConfiguration.set($editConfiguration);
-  };
+  let device = $derived(
+    configuration.current && deviceForId(configuration.current.deviceId),
+  );
 </script>
 
-{#if $configuration && $editConfiguration}
-  {#if deviceHasCapability(device, "led", $configuration.firmwareVersion)}
-    <CheckOption bind:checked={$editConfiguration.ledOn}
+{#if configuration.current && configuration.editing && device}
+  {#if deviceHasCapability(device, "led", configuration.current.firmwareVersion)}
+    <CheckOption bind:checked={configuration.editing.ledOn}
       >LED permanently on when powered</CheckOption
     >
 
-    <CheckOption bind:checked={$editConfiguration.ledFlash}
+    <CheckOption bind:checked={configuration.editing.ledFlash}
       >LED flash on MIDI activity</CheckOption
     >
   {/if}
 
-  <CheckOption bind:checked={$editConfiguration.controllerFlip}
+  <CheckOption bind:checked={configuration.editing.controllerFlip}
     >Rotate controller 180º</CheckOption
   >
 
-  {#if semverGte($configuration.firmwareVersion, "2.1.0")}
-    <CheckOption bind:checked={$editConfiguration.midiThru}>
+  {#if semverGte(configuration.current.firmwareVersion, "2.1.0")}
+    <CheckOption bind:checked={configuration.editing.midiThru}>
       Soft MIDI thru (echo MIDI clock/note data sent to USB out of the minijack)
     </CheckOption>
   {/if}
 
-  {#if deviceHasCapability(device, "faderCalibration", $configuration.firmwareVersion)}
+  {#if deviceHasCapability(device, "faderCalibration", configuration.current.firmwareVersion)}
     <hr />
     <h3>Fader Minimum/Maximum calibration</h3>
     <div>
@@ -42,8 +40,7 @@
       <input
         name="faderMin"
         type="number"
-        bind:value={$editConfiguration.faderMin}
-        onblur={touchControl}
+        bind:value={configuration.editing.faderMin}
         min="0"
         max={(1 << 13) - 1}
       />
@@ -53,8 +50,7 @@
       <input
         name="faderMax"
         type="number"
-        bind:value={$editConfiguration.faderMax}
-        onblur={touchControl}
+        bind:value={configuration.editing.faderMax}
         min="0"
         max={(1 << 13) - 1}
       />
@@ -70,10 +66,10 @@
     </p>
   {/if}
 
-  {#if deviceHasCapability(device, "i2c", $configuration.firmwareVersion)}
+  {#if deviceHasCapability(device, "i2c", configuration.current.firmwareVersion)}
     <hr />
     <h3>I2C Leader/Follower</h3>
-    <select bind:value={$editConfiguration.i2cLeader} onchange={touchControl}>
+    <select bind:value={configuration.editing.i2cLeader}>
       <option value={false}>Follower</option>
       <option value={true}>Leader</option>
     </select>

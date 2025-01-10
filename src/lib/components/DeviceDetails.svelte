@@ -1,23 +1,30 @@
 <script lang="ts">
   import { gt as semverGt } from "semver";
 
-  import { webMidiEnabled } from "$lib/stores";
+  import { midiState } from "$lib/state/midi.svelte";
 
   import { deviceForId } from "$lib/configuration";
-  import { configuration } from "$lib/stores";
-  import { onDestroy } from "svelte";
+  import { configuration } from "$lib/state/configuration.svelte";
 
   let upgradeString = $state("");
   let upgradeUrl = $state("");
   let versionCompared = false;
 
-  const unsub = configuration.subscribe((c) => {
-    if (c && c.firmwareVersion && c.deviceId && !versionCompared) {
+  $effect(() => {
+    if (
+      configuration.current &&
+      configuration.current.firmwareVersion &&
+      configuration.current.deviceId &&
+      !versionCompared
+    ) {
       versionCompared = true;
-      const device = deviceForId(c.deviceId);
+      const device = deviceForId(configuration.current.deviceId);
       if (
         device.latestFirmwareVersion &&
-        semverGt(device.latestFirmwareVersion, c.firmwareVersion)
+        semverGt(
+          device.latestFirmwareVersion,
+          configuration.current.firmwareVersion,
+        )
       ) {
         upgradeString = `A new version of the ${device.name} firmware (${device.latestFirmwareVersion}) is available.`;
         upgradeUrl = device.firmwareUrl || "";
@@ -27,20 +34,18 @@
       }
     }
   });
-
-  onDestroy(() => {
-    unsub();
-  });
 </script>
 
-{#if $webMidiEnabled}
+{#if midiState.webMidiEnabled}
   <div class="details">
     <!-- <MidiSelector /> -->
-    {#if $configuration}
+    {#if configuration.current}
       <p class="device">
-        Connected: <strong>{deviceForId($configuration.deviceId).name}</strong>
+        Connected: <strong
+          >{deviceForId(configuration.current.deviceId).name}</strong
+        >
         running firmware
-        <strong>{$configuration.firmwareVersion}</strong>
+        <strong>{configuration.current.firmwareVersion}</strong>
         {#if upgradeString.trim() != ""}
           <span class="upgrade">
             {upgradeString}
