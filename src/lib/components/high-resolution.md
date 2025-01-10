@@ -12,8 +12,8 @@ The 14 bits of data are split into two chunks, MSB/LSB style: one 7-bit chunk fo
 
 #### Doesn't my device have an ADC with less than 14 bits?
 
-The RP2040 in 16nx/ devices only has a 12-bit ADC, correct. In that instance, we actually multiply the read value by 4 (or left shift it 2, really) to get a 14-bit number.
+The RP2040 in 16nx devices only has a 12-bit ADC, and so the firmware actually multiples the read analog value by 4 (or left shifts it by 2, really) to get a 14-bit number. So yes, we don't have 14 "real" usable bits of data.
 
-But even before that, a 12-bit ADC probably only has about 10 usable bits of data - that is to say, if you right-shift it 2 (divide by 4) you will filter out a lot of the noise.
+But: a 12-bit ADC probably doesn't have _12_ usable bits of data, really; one you filter out noise and jitter, you probably are working with 10 usable bits of data (ie: if you /4 or >> 2, you will filter out a lot of unwanted noise).
 
 But regardless: 10 usable bits - 0-1023 - is _still_ better than 0-127. So there's an advantage to using this, if it's available to you.

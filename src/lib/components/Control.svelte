@@ -27,8 +27,9 @@
       <span
         class="hires"
         title="This channel is in high-resolution mode, meaning it also uses a 'shadow' CC, 32 above the main CC"
-        >&amp; {control.cc + 32}</span
       >
+        &amp; {control.cc + 32}
+      </span>
     {/if}
   </dd>
   {#if !disableValue}
@@ -40,8 +41,9 @@
             class="controlval"
             class:highresolution={control.highResolution}
             class:lowvalue={control.val < overUnderThreshold}
-            >{control.val}</span
           >
+            {control.val}
+          </span>
         {/if}
         <div class="bar" style="height: {barHeight}px"></div>
       </div>

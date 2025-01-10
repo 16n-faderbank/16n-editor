@@ -304,7 +304,6 @@ export const deviceHasCapability = (
     return true;
   }
 
-  // return !!device.capabilities[capability];
   return gte(config.firmwareVersion, device.capabilities[capability]);
 };
 

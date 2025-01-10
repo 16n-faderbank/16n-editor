@@ -120,6 +120,7 @@
   dl dd:last-child {
     border-bottom: 1px solid #aaa;
   }
+
   dd input:invalid {
     background: #f99;
   }
