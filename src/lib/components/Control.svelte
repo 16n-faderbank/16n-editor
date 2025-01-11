@@ -38,9 +38,11 @@
       <div class="inner">
         {#if control.val !== undefined}
           <span
-            class="controlval"
-            class:highresolution={control.highResolution}
-            class:lowvalue={control.val < overUnderThreshold}
+            class={{
+              controlval: true,
+              highresolution: control.highResolution,
+              lowvalue: control.val < overUnderThreshold,
+            }}
           >
             {control.val}
           </span>
