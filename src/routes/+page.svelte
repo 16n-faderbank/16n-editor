@@ -77,10 +77,9 @@
               memory.
             </p>
             <p>
-              <Button
-                label="Click to reset your 16n's EEPROM to factory defaults"
-                click={transmitFactoryReset}
-              />
+              <Button onclick={transmitFactoryReset}>
+                Click to reset your 16n's EEPROM to factory defaults
+              </Button>
             </p>
           </div>
         {:else}

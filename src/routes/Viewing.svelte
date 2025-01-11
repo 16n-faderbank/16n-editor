@@ -32,12 +32,10 @@
 
 {#if configuration.current}
   <Subhead title="Current Configuration">
-    <Button
-      label="Export current config"
-      icon="file-export"
-      click={doExportConfig}
-    />
-    <Button label="Edit Config" icon="pencil-alt" click={doEditMode} />
+    <Button icon="file-export" onclick={doExportConfig}>
+      Export current config
+    </Button>
+    <Button icon="pencil-alt" onclick={doEditMode}>Edit config</Button>
     <!-- <Button label="Reload config from controller" icon="sync" clickMessageName="requestConfig" on:message={handleMessage}/> -->
   </Subhead>
   <Tabs>

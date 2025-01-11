@@ -14,6 +14,7 @@
   }
   details {
     max-width: 80ch;
+    margin: 1rem 0;
   }
 
   :global(details p) {
