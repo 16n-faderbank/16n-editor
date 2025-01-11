@@ -1,22 +1,23 @@
 <script lang="ts">
   import Icon from "$lib/components/Icon.svelte";
+  import type { Snippet } from "svelte";
 
   interface Props {
-    label: string;
     icon?: string;
     disabled?: boolean;
-    click: () => void;
+    onclick: () => void;
+    children: Snippet;
   }
 
-  let { label, icon = "", disabled = false, click }: Props = $props();
+  let { children, icon = "", disabled = false, onclick }: Props = $props();
 </script>
 
 <div class="button-wrapper">
-  <button {disabled} onclick={click}>
+  <button {disabled} {onclick}>
     {#if icon && icon.trim() !== ""}
       <Icon i={icon} />
     {/if}
-    {label}
+    {@render children()}
   </button>
 </div>
 

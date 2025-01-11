@@ -36,9 +36,6 @@
   configuration after performing a reset.
 </p>
 
-<Button
-  label="Reset controller configuration to defaults"
-  icon="history"
-  on:message
-  click={transmitFactoryReset}
-/>
+<Button icon="history" on:message onclick={transmitFactoryReset}>
+  Reset controller configuration to defaults
+</Button>

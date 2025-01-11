@@ -75,17 +75,27 @@
         configuration.editing.firmwareVersion,
       ),
   );
+
+  const setAllHighResolution = (highRes: boolean, type: "usb" | "trs") => {
+    if (type == "usb") {
+      configuration.editing?.usbControls.forEach((c) => {
+        c.highResolution = highRes;
+      });
+    }
+    if (type == "trs") {
+      configuration.editing?.trsControls.forEach((c) => {
+        c.highResolution = highRes;
+      });
+    }
+  };
 </script>
 
 <Subhead title="Edit Configuration">
-  <Button label="Cancel" icon="times" click={cancelEditMode} />
-  <Button label="Import config" icon="file-import" click={doImportConfig} />
-  <Button
-    label="Update controller"
-    icon="download"
-    click={transmitConfig}
-    disabled={!configDirty}
-  />
+  <Button icon="times" onclick={cancelEditMode}>Cancel</Button>
+  <Button icon="file-import" onclick={doImportConfig}>Import config</Button>
+  <Button icon="download" onclick={transmitConfig} disabled={!configDirty}>
+    Update controller
+  </Button>
 </Subhead>
 
 {#if configuration.editing}
@@ -108,6 +118,12 @@
         {/each}
       </div>
       {#if deviceSupportsHighResolution}
+        <Button onclick={() => setAllHighResolution(true, "usb")}
+          >Set all USB channels to high-resolution (14 bit)</Button
+        >
+        <Button onclick={() => setAllHighResolution(false, "usb")}
+          >Set all USB channels to regular-resolution (7 bit)</Button
+        >
         <ExplainHiResMode />
       {/if}
     </TabPanel>
@@ -121,6 +137,12 @@
         {/each}
       </div>
       {#if deviceSupportsHighResolution}
+        <Button onclick={() => setAllHighResolution(true, "trs")}
+          >Set all TRS channels to high-resolution (14 bit)</Button
+        >
+        <Button onclick={() => setAllHighResolution(false, "trs")}
+          >Set all TRS channels to regular-resolution (7 bit)</Button
+        >
         <ExplainHiResMode />
       {/if}
     </TabPanel>
