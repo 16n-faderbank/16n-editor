@@ -17,7 +17,8 @@
     "capabilities": {
       "i2c": true,
       "led": true,
-      "faderCalibration": true
+      "faderCalibration": true,
+      "highResolution": "2.2.0"
     },
     "latestFirmwareVersion": "2.1.1",
     "firmwareUrl": "https://github.com/16n-faderbank/16n/releases/latest"
@@ -28,7 +29,8 @@
     "capabilities": {
       "i2c": true,
       "led": true,
-      "faderCalibration": true
+      "faderCalibration": true,
+      "highResolution": "2.2.0"
     },
     "sendShortMessages": true,
     "latestFirmwareVersion": "2.1.1",
