@@ -17,6 +17,8 @@ Version 2.0.0 of the editor is a large overhaul, with a few goals:
 
 The result is a little more readable by most JS developers, and we gain a lot of convenience as well as belt/braces security from the move to Typescript.
 
+Version 2.1.0 of the editor brings the project up to Svelte 5, and adds support for 14-bit MIDI CCs if the device has appropriate firmware.
+
 ## Build Requirements
 
 - Node.js v22+ (LTS)
@@ -30,10 +32,6 @@ The result is a little more readable by most JS developers, and we gain a lot of
 ## Installation
 
     pnpm install
-
-## Configuration
-
-Note that `package.json` contains a `config` object that lets us specify the latest version of the firmware, thus triggering a prompt to update. This should be set to the latest version of the firmware.
 
 ## Running the development environment
 
@@ -78,7 +76,7 @@ Code linting is handled with ESLint, and code must meet the Prettier formatting 
 - `src/lib/logger.ts` is a convenience function to log items to the console in development mode.
 - `src/lib/state` contains the various global reactive state objects that will be used throughout the application (see later)
 - `src/lib/types.ts` exports custom types used within the application: notably, individual `Control` items, and an entire `ControllerConfiguration`
-- `src/lib/midi/midi.ts` exports all the necessary functions to listen to MIDI ports as they connect/disconnect, request 16n configs from appropriate devices, and listen to individual events from the connected devices.
+- `src/lib/midi/midi.svelte.ts` exports all the necessary functions to listen to MIDI ports as they connect/disconnect, request 16n configs from appropriate devices, and listen to individual events from the connected devices.
 - `src/lib/midi/sysex.ts` exports all the necessary functions to send the various System Exclusive messages a 16n supports.
 
 ## State
