@@ -1,5 +1,5 @@
 <script lang="ts">
-  import HighResolutionExplanation from "./high-resolution.md";
+  import HighResolutionExplanation from "./content/high-resolution.md";
 </script>
 
 <details>
