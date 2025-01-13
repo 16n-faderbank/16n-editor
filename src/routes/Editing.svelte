@@ -7,6 +7,8 @@
   import EditControl from "$lib/components/EditControl.svelte";
   import FactoryReset from "$lib/components/FactoryReset.svelte";
   import Subhead from "$lib/components/Subhead.svelte";
+  import ExplainHiResMode from "$lib/components/ExplainHiResMode.svelte";
+  import InvalidHiresController from "$lib/components/InvalidHiresController.svelte";
   import { Tab, TabList, TabPanel, Tabs } from "$lib/components/tabs";
 
   import {
@@ -19,7 +21,6 @@
   import { requestConfig, sendConfiguration } from "$lib/midi/sysex";
   import { configuration } from "$lib/state/configuration.svelte";
   import { midiState } from "$lib/state/midi.svelte";
-  import ExplainHiResMode from "$lib/components/ExplainHiResMode.svelte";
 
   let configDirty = $state(false);
 
@@ -76,6 +77,20 @@
       ),
   );
 
+  let invalidUsbHires = $derived(
+    configuration.editing &&
+      configuration.editing.usbControls.some(
+        (c) => c.highResolution && c.cc > 31,
+      ),
+  );
+
+  let invalidTrsHires = $derived(
+    configuration.editing &&
+      configuration.editing.trsControls.some(
+        (c) => c.highResolution && c.cc > 31,
+      ),
+  );
+
   const setAllHighResolution = (highRes: boolean, type: "usb" | "trs") => {
     if (type == "usb") {
       configuration.editing?.usbControls.forEach((c) => {
@@ -118,6 +133,9 @@
         {/each}
       </div>
       {#if deviceSupportsHighResolution}
+        {#if invalidUsbHires}
+          <InvalidHiresController type="usb" />
+        {/if}
         <Button onclick={() => setAllHighResolution(true, "usb")}
           >Set all USB channels to high-resolution (14 bit)</Button
         >
@@ -137,6 +155,9 @@
         {/each}
       </div>
       {#if deviceSupportsHighResolution}
+        {#if invalidTrsHires}
+          <InvalidHiresController type="trs" />
+        {/if}
         <Button onclick={() => setAllHighResolution(true, "trs")}
           >Set all TRS channels to high-resolution (14 bit)</Button
         >
