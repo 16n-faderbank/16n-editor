@@ -103,6 +103,55 @@
       });
     }
   };
+
+  const setAllChannels = (type: "usb" | "trs") => {
+    if (!configuration.editing) {
+      console.error("No configuration to update");
+      return;
+    }
+
+    if (type == "usb") {
+      const chan = configuration.editing.usbControls[0].channel;
+      for (let i = 1; i < configuration.editing.usbControls.length; i++) {
+        configuration.editing.usbControls[i].channel = chan;
+      }
+    }
+    if (type == "trs") {
+      const chan = configuration.editing.trsControls[0].channel;
+      for (let i = 1; i < configuration.editing.trsControls.length; i++) {
+        configuration.editing.usbControls[i].channel = chan;
+      }
+    }
+  };
+  const setSequentialCCs = (type: "usb" | "trs") => {
+    if (!configuration.editing) {
+      console.error("No configuration to update");
+      return;
+    }
+
+    if (type == "usb") {
+      const cc = configuration.editing.usbControls[0].cc;
+      for (let i = 1; i < configuration.editing.usbControls.length; i++) {
+        let finalCC = cc + i;
+        let maxCC = configuration.editing.usbControls[i].highResolution
+          ? 95
+          : 127;
+        configuration.editing.usbControls[i].cc =
+          finalCC > maxCC ? maxCC : finalCC;
+      }
+    }
+    if (type == "trs") {
+      const cc = configuration.editing.trsControls[0].cc;
+      for (let i = 1; i < configuration.editing.trsControls.length; i++) {
+        let finalCC = cc + i;
+        let maxCC = configuration.editing.trsControls[i].highResolution
+          ? 95
+          : 127;
+        configuration.editing.usbControls[i].cc =
+          finalCC > maxCC ? maxCC : finalCC;
+      }
+    }
+  };
 </script>
 
 <Subhead title="Edit Configuration">
@@ -132,16 +181,30 @@
           {/if}
         {/each}
       </div>
+      <div id="extra-controls">
+        <div class="left">
+          <Button onclick={() => setAllChannels("usb")}
+            >Set all channels to that of channel 1</Button
+          ><br />
+          <Button onclick={() => setSequentialCCs("usb")}
+            >Set CCs sequentially, starting at channel 1</Button
+          >
+        </div>
+        <div class="right">
+          {#if deviceSupportsHighResolution}
+            <Button onclick={() => setAllHighResolution(true, "usb")}
+              >Set all USB channels to high-resolution (14 bit)</Button
+            ><br />
+            <Button onclick={() => setAllHighResolution(false, "usb")}
+              >Set all USB channels to regular-resolution (7 bit)</Button
+            >
+          {/if}
+        </div>
+      </div>
       {#if deviceSupportsHighResolution}
         {#if invalidUsbHires}
           <InvalidHiresController type="usb" />
         {/if}
-        <Button onclick={() => setAllHighResolution(true, "usb")}
-          >Set all USB channels to high-resolution (14 bit)</Button
-        >
-        <Button onclick={() => setAllHighResolution(false, "usb")}
-          >Set all USB channels to regular-resolution (7 bit)</Button
-        >
         <ExplainHiResMode />
       {/if}
     </TabPanel>
@@ -154,16 +217,30 @@
           {/if}
         {/each}
       </div>
+      <div id="extra-controls">
+        <div class="left">
+          <Button onclick={() => setAllChannels("trs")}
+            >Set all channels to that of channel 1</Button
+          ><br />
+          <Button onclick={() => setSequentialCCs("trs")}
+            >Set CCs sequentially, starting at channel 1</Button
+          >
+        </div>
+        <div class="right">
+          {#if deviceSupportsHighResolution}
+            <Button onclick={() => setAllHighResolution(true, "trs")}
+              >Set all TRS channels to high-resolution (14 bit)</Button
+            ><br />
+            <Button onclick={() => setAllHighResolution(false, "trs")}
+              >Set all TRS channels to regular-resolution (7 bit)</Button
+            >
+          {/if}
+        </div>
+      </div>
       {#if deviceSupportsHighResolution}
         {#if invalidTrsHires}
           <InvalidHiresController type="trs" />
         {/if}
-        <Button onclick={() => setAllHighResolution(true, "trs")}
-          >Set all TRS channels to high-resolution (14 bit)</Button
-        >
-        <Button onclick={() => setAllHighResolution(false, "trs")}
-          >Set all TRS channels to regular-resolution (7 bit)</Button
-        >
         <ExplainHiResMode />
       {/if}
     </TabPanel>
@@ -184,5 +261,18 @@
   #controls {
     display: flex;
     min-width: calc(16 * 60px);
+  }
+
+  #extra-controls {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #extra-controls .left {
+    flex: 1;
+  }
+  #extra-controls .right {
+    flex: 1;
+    text-align: right;
   }
 </style>
