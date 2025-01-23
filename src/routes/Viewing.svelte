@@ -11,7 +11,8 @@
 
   const doExportConfig = () => {
     if (configuration.current) {
-      exportConfig(configuration.current);
+      exportConfig($state.snapshot(configuration.current));
+      console.log("Export complete");
     }
   };
 
