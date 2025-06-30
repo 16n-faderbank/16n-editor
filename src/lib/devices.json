@@ -44,7 +44,7 @@
       "led": true,
       "highResolution": "3.1.0"
     },
-    "latestFirmwareVersion": "3.0.3",
+    "latestFirmwareVersion": "3.1.1",
     "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
   },
   {
@@ -55,7 +55,7 @@
       "led": true,
       "highResolution": "3.1.0"
     },
-    "latestFirmwareVersion": "3.0.3",
+    "latestFirmwareVersion": "3.1.1",
     "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
   }
 ]
