@@ -170,3 +170,13 @@ export const labelForControl = (device: Device, controlIndex: number) => {
 
   return device.controlLabels[controlIndex] || `${controlIndex + 1}`;
 };
+
+export const labelForButtonControl = (device: Device, controlIndex: number) => {
+  if (!device.buttonControlLabels) {
+    return `Button ${controlIndex + 1}`;
+  }
+
+  return (
+    device.buttonControlLabels[controlIndex] || `Button ${controlIndex + 1}`
+  );
+};
