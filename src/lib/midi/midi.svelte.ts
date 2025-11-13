@@ -110,6 +110,7 @@ const doMidiHeartBeat = () => {
     listenForCC(midiState.selectedInput);
     listenForSysex(midiState.selectedInput);
     listenForNotes(midiState.selectedInput);
+
     logger("Hearbeat requesting config.");
     doRequestConfig();
   }
@@ -147,6 +148,7 @@ const controllerMoved = (event: ControlChangeMessageEvent) => {
 };
 
 export const listenForNotes = (input: Input) => {
+  logger(`Adding noteon/off listeners to ${input.name}`);
   input.addListener("noteon", noteOn);
   input.addListener("noteoff", noteOff);
 };
@@ -199,7 +201,7 @@ export const listenForSysex = (input: Input) => {
       configuration.controllerMightNeedFactoryReset = false;
     }
   });
-  logger("Attached sysex listener to ", input.name);
+  logger(`Attached sysex listener to ${input.name}`);
 };
 
 export const doRequestConfig = () => {
@@ -217,8 +219,8 @@ export const doRequestConfig = () => {
   const selectedOutput = midiState.selectedOutput;
 
   if (selectedInput && selectedOutput) {
-    logger("Requesting config over " + selectedOutput.name);
-    logger("Hoping to receive on " + selectedInput.name);
+    logger(`Requesting config over ${selectedOutput.name}`);
+    logger(`Hoping to receive on ${selectedInput.name}`);
     requestConfig(selectedOutput);
   }
 };
