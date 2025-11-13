@@ -18,7 +18,8 @@
       "i2c": true,
       "led": true,
       "faderCalibration": true,
-      "highResolution": "2.2.0"
+      "highResolution": "2.2.0",
+      "midiThru": "2.1.0"
     },
     "latestFirmwareVersion": "2.2.0",
     "firmwareUrl": "https://github.com/16n-faderbank/16n/releases/latest"
@@ -30,7 +31,8 @@
       "i2c": true,
       "led": true,
       "faderCalibration": true,
-      "highResolution": "2.2.0"
+      "highResolution": "2.2.0",
+      "midiThru": "2.1.0"
     },
     "sendShortMessages": true,
     "latestFirmwareVersion": "2.1.1",
@@ -42,7 +44,8 @@
     "capabilities": {
       "i2c": true,
       "led": true,
-      "highResolution": "3.1.0"
+      "highResolution": "3.1.0",
+      "midiThru": true
     },
     "latestFirmwareVersion": "3.1.1",
     "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
@@ -53,7 +56,8 @@
     "capabilities": {
       "i2c": true,
       "led": true,
-      "highResolution": "3.1.0"
+      "highResolution": "3.1.0",
+      "midiThru": true
     },
     "latestFirmwareVersion": "3.1.1",
     "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
@@ -64,7 +68,8 @@
     "buttonCount": 4,
     "capabilities": {
       "8muLed": true,
-      "softwareTrsToggle": true
+      "softwareTrsToggle": true,
+      "midiThru": true
     },
     "latestFirmwareVersion": "0.3.0",
     "controlLabels": [
@@ -85,6 +90,11 @@
       "ʎɐʍ sᴉɥʇ",
       "this way"
     ],
-    "buttonControlLabels": ["Button A", "Button B", "Button C", "Button D"]
+    "buttonControlLabels": [
+      "Button A",
+      "Button B",
+      "Button C",
+      "Button D"
+    ]
   }
 ]

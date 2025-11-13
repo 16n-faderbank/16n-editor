@@ -18,8 +18,10 @@ export const isEquivalent = (
   let optionEquivalents =
     configA.ledOn == configB.ledOn &&
     configA.ledFlash == configB.ledFlash &&
+    configA.ledFlashAccel == configB.ledFlashAccel &&
     configA.controllerFlip == configB.controllerFlip &&
-    configA.midiThru == configB.midiThru;
+    configA.midiThru == configB.midiThru &&
+    configA.trsMode == configB.trsMode;
 
   if ("i2cLeader" in configA || "i2cLeader" in configB) {
     optionEquivalents =
