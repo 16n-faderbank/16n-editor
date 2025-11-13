@@ -1,12 +1,6 @@
 <script lang="ts">
-  import {
-    deviceForId,
-    deviceHasCapability,
-    labelForControl,
-  } from "$lib/configuration";
+  import { buttonModeNames, fromMidiNote } from "$lib/buttons";
   import { labelForButtonControl } from "$lib/configuration";
-  import { CHROMATIC, buttonModeNames, fromMidiNote } from "$lib/buttons";
-  import { configuration } from "$lib/state/configuration.svelte";
 
   import type { ButtonControl, Device } from "$lib/types";
 

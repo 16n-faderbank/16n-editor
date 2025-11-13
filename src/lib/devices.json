@@ -90,11 +90,6 @@
       "ʎɐʍ sᴉɥʇ",
       "this way"
     ],
-    "buttonControlLabels": [
-      "Button A",
-      "Button B",
-      "Button C",
-      "Button D"
-    ]
+    "buttonControlLabels": ["Button A", "Button B", "Button C", "Button D"]
   }
 ]
