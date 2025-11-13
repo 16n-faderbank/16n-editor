@@ -58,5 +58,8 @@ export const combine14Bit = (lsb: number, msb: number): number => {
  * Parses firmware version string into array of numbers
  */
 export const parseFirmwareVersion = (versionString: string): number[] => {
-  return versionString.trim().split(".").map((n) => parseInt(n));
+  return versionString
+    .trim()
+    .split(".")
+    .map((n) => parseInt(n));
 };

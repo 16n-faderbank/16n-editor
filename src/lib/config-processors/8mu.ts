@@ -29,10 +29,11 @@ export const configFromSysexArray = (
   const offset = 9;
 
   // TODO: these need to be dynamic
-  const ledOn = true;
-  const ledFlash = false;
+  const ledFlash = true;
+  const ledFlashAccel = false;
   const controllerFlip = false;
   const midiThru = false;
+  const trsMode = 0;
 
   const usbControls: Partial<Control>[] = [];
   const trsControls: Partial<Control>[] = [];
@@ -65,20 +66,22 @@ export const configFromSysexArray = (
   });
 
   return {
-    ledOn,
     ledFlash,
+    ledFlashAccel,
+    trsMode,
     controllerFlip,
     midiThru,
     usbControls,
     trsControls,
     deviceId,
+    device,
     firmwareVersion,
   } as ControllerConfiguration;
 };
 
 export const toSysexArray = (
   config: ControllerConfiguration,
-  device: Device,
+  // device: Device,
 ): number[] => {
   // TODO: Implement 8mu-specific serialization
   // This is, again. WIP

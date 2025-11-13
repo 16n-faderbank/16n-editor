@@ -13,10 +13,7 @@ export interface ConfigProcessor {
     firmwareVersion: string,
   ) => ControllerConfiguration;
 
-  toSysexArray: (
-    config: ControllerConfiguration,
-    device: Device,
-  ) => number[];
+  toSysexArray: (config: ControllerConfiguration, device: Device) => number[];
 }
 
 /**

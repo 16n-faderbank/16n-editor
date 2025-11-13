@@ -177,7 +177,7 @@
       <div id="controls">
         {#each configuration.editing.usbControls as editControl, index}
           {#if device && index < device.controlCount}
-            <EditControl {editControl} {index} />
+            <EditControl {device} {editControl} {index} />
           {/if}
         {/each}
       </div>
@@ -213,7 +213,7 @@
       <div id="controls">
         {#each configuration.editing.trsControls as editControl, index}
           {#if device && index < device.controlCount}
-            <EditControl {editControl} {index} />
+            <EditControl {device} {editControl} {index} />
           {/if}
         {/each}
       </div>

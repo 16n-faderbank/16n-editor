@@ -62,8 +62,27 @@
     "name": "8mu2040",
     "controlCount": 16,
     "capabilities": {
-      "led": true
+      "8muLed": true,
+      "softwareTrsToggle": true
     },
-    "latestFirmwareVersion": "0.3.0"
+    "latestFirmwareVersion": "0.3.0",
+    "controlLabels": [
+      "Fader 1",
+      "Fader 2",
+      "Fader 3",
+      "Fader 4",
+      "Fader 5",
+      "Fader 6",
+      "Fader 7",
+      "Fader 8",
+      " ↑ Front",
+      "↑ Back",
+      "↑ Right",
+      "↑ Left",
+      "↻",
+      "↺",
+      "ʎɐʍ sᴉɥʇ",
+      "this way"
+    ]
   }
 ]
