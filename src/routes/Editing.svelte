@@ -5,6 +5,7 @@
   import Button from "$lib/components/Button.svelte";
   import DeviceOptions from "$lib/components/DeviceOptions.svelte";
   import EditControl from "$lib/components/EditControl.svelte";
+  import EditButtonControl from "$lib/components/EditButtonControl.svelte";
   import FactoryReset from "$lib/components/FactoryReset.svelte";
   import Subhead from "$lib/components/Subhead.svelte";
   import ExplainHiResMode from "$lib/components/ExplainHiResMode.svelte";
@@ -167,6 +168,10 @@
     <TabList>
       <Tab>USB</Tab>
       <Tab>TRS Jack</Tab>
+      {#if device?.buttonCount && device.buttonCount > 0}
+        <Tab>USB Buttons</Tab>
+        <Tab>TRS Buttons</Tab>
+      {/if}
       <Tab>Device Options</Tab>
       {#if configuration.current && semverGte(configuration.current.firmwareVersion, "2.1.0")}
         <Tab>Factory Reset</Tab>
@@ -244,6 +249,27 @@
         <ExplainHiResMode />
       {/if}
     </TabPanel>
+
+    {#if device?.buttonCount && device.buttonCount > 0}
+      <TabPanel>
+        <div id="controls">
+          {#each configuration.editing.usbButtonControls as editControl, index}
+            {#if device && index < device.controlCount}
+              <EditButtonControl {device} {editControl} {index} />
+            {/if}
+          {/each}
+        </div>
+      </TabPanel>
+      <TabPanel>
+        <div id="controls">
+          {#each configuration.editing.trsButtonControls as editControl, index}
+            {#if device && index < device.controlCount}
+              <EditButtonControl {device} {editControl} {index} />
+            {/if}
+          {/each}
+        </div>
+      </TabPanel>
+    {/if}
 
     <TabPanel>
       <DeviceOptions />

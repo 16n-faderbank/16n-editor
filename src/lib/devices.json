@@ -61,6 +61,7 @@
   {
     "name": "8mu2040",
     "controlCount": 16,
+    "buttonCount": 4,
     "capabilities": {
       "8muLed": true,
       "softwareTrsToggle": true
@@ -83,6 +84,7 @@
       "↺",
       "ʎɐʍ sᴉɥʇ",
       "this way"
-    ]
+    ],
+    "buttonControlLabels": ["Button A", "Button B", "Button C", "Button D"]
   }
 ]

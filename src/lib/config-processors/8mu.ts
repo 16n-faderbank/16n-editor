@@ -65,6 +65,44 @@ export const configFromSysexArray = (
     }
   });
 
+  const usbButtonOffset = 64 + offset;
+  const trsButtonOffset = 80 + offset;
+  const usbButtonControls = [];
+  const trsButtonControls = [];
+  const buttonCount = device?.buttonCount || 0;
+
+  for (let i = 0; i < buttonCount; i++) {
+    const index = i * 4 + usbButtonOffset;
+    const channel = data[index];
+    const mode = data[index + 1];
+    const paramA = data[index + 2];
+    const paramB = data[index + 3];
+    if (channel != 0x7f) {
+      usbButtonControls.push({
+        channel,
+        mode,
+        paramA,
+        paramB,
+      });
+    }
+  }
+
+  for (let i = 0; i < buttonCount; i++) {
+    const index = i * 4 + trsButtonOffset;
+    const channel = data[index];
+    const mode = data[index + 1];
+    const paramA = data[index + 2];
+    const paramB = data[index + 3];
+    if (channel != 0x7f) {
+      trsButtonControls.push({
+        channel,
+        mode,
+        paramA,
+        paramB,
+      });
+    }
+  }
+
   return {
     ledFlash,
     ledFlashAccel,
@@ -73,6 +111,8 @@ export const configFromSysexArray = (
     midiThru,
     usbControls,
     trsControls,
+    usbButtonControls,
+    trsButtonControls,
     deviceId,
     device,
     firmwareVersion,
@@ -113,7 +153,7 @@ export const toSysexArray = (
   const usbChannelOffset = 4;
   const trsChannelOffset = 36;
   const usbControlOffset = 20;
-  const trsControlOffset = 68;
+  const trsControlOffset = 52;
 
   config.usbControls.forEach((control, index) => {
     array[index + usbChannelOffset] = control.channel;
@@ -122,6 +162,23 @@ export const toSysexArray = (
   config.trsControls.forEach((control, index) => {
     array[index + trsChannelOffset] = control.channel;
     array[index + trsControlOffset] = control.cc;
+  });
+
+  const usbButtonOffset = 68;
+  const trsButtonOffset = 84;
+
+  config.usbButtonControls?.forEach((control, index) => {
+    array[index * 4 + usbButtonOffset] = control.channel;
+    array[index * 4 + usbButtonOffset + 1] = control.mode;
+    array[index * 4 + usbButtonOffset + 2] = control.paramA;
+    array[index * 4 + usbButtonOffset + 3] = control.paramB;
+  });
+
+  config.trsButtonControls?.forEach((control, index) => {
+    array[index * 4 + trsButtonOffset] = control.channel;
+    array[index * 4 + trsButtonOffset + 1] = control.mode;
+    array[index * 4 + trsButtonOffset + 2] = control.paramA;
+    array[index * 4 + trsButtonOffset + 3] = control.paramB;
   });
 
   return array;

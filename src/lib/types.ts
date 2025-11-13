@@ -7,6 +7,13 @@ export type Control = {
   highResolution?: boolean;
 };
 
+export type ButtonControl = {
+  channel: number;
+  mode: number;
+  paramA: number;
+  paramB: number;
+};
+
 export type ControllerConfiguration = {
   ledOn?: boolean;
   ledFlash: boolean;
@@ -14,15 +21,17 @@ export type ControllerConfiguration = {
   controllerFlip: boolean;
   midiThru: boolean;
   deviceId: number;
-  i2cLeader: boolean;
-  faderMin: number;
-  faderMax: number;
+  i2cLeader?: boolean;
+  faderMin?: number;
+  faderMax?: number;
   trsMode?: number;
   firmwareVersion: string;
   usbControls: Control[];
   trsControls: Control[];
-  usbHighResolution: boolean[];
-  trsHighResolution: boolean[];
+  usbButtonControls?: ButtonControl[];
+  trsButtonControls?: ButtonControl[];
+  usbHighResolution?: boolean[];
+  trsHighResolution?: boolean[];
 };
 
 export type DeviceCapability =
@@ -37,9 +46,11 @@ export type DeviceCapability =
 export type Device = {
   name: string;
   controlCount: number;
+  buttonCount?: number;
   capabilities: Partial<Record<DeviceCapability, string | boolean>>;
   sendShortMessages?: boolean;
   latestFirmwareVersion?: string;
   firmwareUrl?: string;
   controlLabels?: string[];
+  buttonControlLabels?: string[];
 };
