@@ -13,7 +13,7 @@ import { configuration } from "$lib/state/configuration.svelte";
 
 import { midiState } from "$lib/state/midi.svelte";
 
-import type { Control } from "$lib/types";
+import type { Control, ButtonControl } from "$lib/types";
 
 type MidiInterface = Input | Output;
 
@@ -109,6 +109,7 @@ const doMidiHeartBeat = () => {
   ) {
     listenForCC(midiState.selectedInput);
     listenForSysex(midiState.selectedInput);
+    listenForNotes(midiState.selectedInput);
     logger("Hearbeat requesting config.");
     doRequestConfig();
   }
@@ -140,6 +141,39 @@ const controllerMoved = (event: ControlChangeMessageEvent) => {
         c.val = (c.msb << 7) + c.lsb;
       } else {
         c.val = c.msb;
+      }
+    });
+  }
+};
+
+export const listenForNotes = (input: Input) => {
+  input.addListener("noteon", noteOn);
+  input.addListener("noteoff", noteOff);
+};
+
+const noteOn = (event: MessageEvent) => {
+  if (configuration.current && configuration.current.usbButtonControls) {
+    configuration.current.usbButtonControls.forEach((c: ButtonControl) => {
+      if (
+        event.message.channel == c.channel &&
+        event.message.data[1] == c.paramA &&
+        c.mode === 0
+      ) {
+        c.pressed = true;
+      }
+    });
+  }
+};
+
+const noteOff = (event: MessageEvent) => {
+  if (configuration.current && configuration.current.usbButtonControls) {
+    configuration.current.usbButtonControls.forEach((c: ButtonControl) => {
+      if (
+        event.message.channel == c.channel &&
+        event.message.data[1] == c.paramA &&
+        c.mode === 0
+      ) {
+        c.pressed = false;
       }
     });
   }

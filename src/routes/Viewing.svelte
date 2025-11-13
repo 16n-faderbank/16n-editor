@@ -84,7 +84,7 @@
         <div id="controls">
           {#each configuration.current.trsButtonControls as control, index}
             {#if device && index < device.controlCount}
-              <ButtonControl {device} {control} {index} />
+              <ButtonControl {device} {control} {index} disableValue={true} />
             {/if}
           {/each}
         </div>

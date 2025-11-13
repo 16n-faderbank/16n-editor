@@ -12,6 +12,7 @@ export type ButtonControl = {
   mode: number;
   paramA: number;
   paramB: number;
+  pressed: boolean;
 };
 
 export type ControllerConfiguration = {

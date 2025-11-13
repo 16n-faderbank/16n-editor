@@ -10,7 +10,7 @@
     disableValue?: boolean;
   }
 
-  let { control, index, device }: Props = $props();
+  let { control, index, device, disableValue }: Props = $props();
 
   // let barHeight = $derived(
   // control.highResolution ? (control.val || 0) >> 7 : control.val,
@@ -21,29 +21,47 @@
   let modeName = $derived(buttonModeNames[control.mode]);
 </script>
 
-<dl class="config-column">
-  <dt class="index">{labelForButtonControl(device, index)}</dt>
-  <dt>Channel</dt>
-  <dd>{control.channel}</dd>
-  <dt>Mode</dt>
-  <dd>{modeName}</dd>
+<div class="config-column">
+  <dl>
+    <dt class="index">{labelForButtonControl(device, index)}</dt>
+    <dt>Channel</dt>
+    <dd>{control.channel}</dd>
+    <dt>Mode</dt>
+    <dd>{modeName}</dd>
 
-  {#if control.mode == 1}
-    <dt>CC</dt>
-    <dd>{control.paramA}</dd>
-    <dt>On Value</dt>
-    <dd>{control.paramB}</dd>
-  {:else}
-    <dt>Note Number</dt>
-    <dd>{control.paramA} ({fromMidiNote(control.paramA)})</dd>
-    <dt>Velocity</dt>
-    <dd>{control.paramB}</dd>
+    {#if control.mode == 1}
+      <dt>CC</dt>
+      <dd>{control.paramA}</dd>
+      <dt>On Value</dt>
+      <dd>{control.paramB}</dd>
+    {:else}
+      <dt>Note Number</dt>
+      <dd>{control.paramA} ({fromMidiNote(control.paramA)})</dd>
+      <dt>Velocity</dt>
+      <dd>{control.paramB}</dd>
+    {/if}
+  </dl>
+  {#if !disableValue}
+    {#if control.mode == 0}
+      <div class="button-readout" class:pressed={control.pressed}></div>
+    {/if}
   {/if}
-</dl>
+</div>
 
 <style>
-  dl {
+  .button-readout {
+    height: 30px;
+    border: 1px solid black;
+    margin: 0 0.5em;
+    &.pressed {
+      background: black;
+    }
+  }
+
+  .config-column {
     flex: 1;
+  }
+  dl {
     text-align: center;
   }
   dt {
