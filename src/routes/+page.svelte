@@ -21,6 +21,7 @@
   import DeviceDetails from "$lib/components/DeviceDetails.svelte";
   import Editing from "./Editing.svelte";
   import Viewing from "./Viewing.svelte";
+  import { deviceForId } from "$lib/configuration";
 
   const buildVersion = __BUILD_VERSION__;
 
@@ -58,11 +59,19 @@
       sendFactoryResetRequest(midiState.selectedOutput);
     }
   };
+
+  let productName = $derived.by(() => {
+    if (configuration.current) {
+      const device = deviceForId(configuration.current.deviceId);
+      return device.name.startsWith("8mu") ? "8mu" : "16n";
+    }
+    return "16n";
+  });
 </script>
 
 <main>
   <div id="head">
-    <h1>16n configuration tool</h1>
+    <h1>{productName} configuration tool</h1>
     <DeviceDetails />
   </div>
 
