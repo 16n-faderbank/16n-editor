@@ -86,19 +86,19 @@ const setupMidiHeartBeat = () => {
 
 const doMidiHeartBeat = () => {
   if (!midiState.selectedInput && midiState.inputs.length > 0) {
-    const sixteenN = midiState.inputs.find((input) =>
-      input.name.match(/.*16n.*/),
+    const inputPort = midiState.inputs.find(
+      (input) => input.name.match(/.*16n.*/) || input.name.match(/.*8mu.*/),
     );
-    if (sixteenN) {
-      midiState.selectedInput = sixteenN;
+    if (inputPort) {
+      midiState.selectedInput = inputPort;
     }
   }
   if (!midiState.selectedOutput && midiState.outputs.length > 0) {
-    const sixteenN = midiState.outputs.find((output) =>
-      output.name.match(/.*16n.*/),
+    const outputPort = midiState.outputs.find(
+      (output) => output.name.match(/.*16n.*/) || output.name.match(/.*8mu.*/),
     );
-    if (sixteenN) {
-      midiState.selectedOutput = sixteenN;
+    if (outputPort) {
+      midiState.selectedOutput = outputPort;
     }
   }
 
