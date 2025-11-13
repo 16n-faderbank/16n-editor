@@ -180,7 +180,7 @@
 
     <TabPanel>
       <div id="controls">
-        {#each configuration.editing.usbControls as editControl, index}
+        {#each { length: configuration.editing.usbControls.length }, index}
           {#if device && index < device.controlCount}
             <EditControl
               {device}
@@ -220,7 +220,7 @@
 
     <TabPanel>
       <div id="controls">
-        {#each configuration.editing.trsControls as editControl, index}
+        {#each { length: configuration.editing.trsControls.length }, index}
           {#if device && index < device.controlCount}
             <EditControl
               {device}
@@ -261,7 +261,7 @@
     {#if device?.buttonCount && device.buttonCount > 0}
       <TabPanel>
         <div id="controls">
-          {#each configuration.editing.usbButtonControls as editControl, index}
+          {#each { length: configuration.editing.usbButtonControls!.length }, index}
             {#if device && index < device.controlCount}
               <EditButtonControl
                 {device}
@@ -276,7 +276,7 @@
       </TabPanel>
       <TabPanel>
         <div id="controls">
-          {#each configuration.editing.trsButtonControls as editControl, index}
+          {#each { length: configuration.editing.trsButtonControls!.length }, index}
             {#if device && index < device.controlCount}
               <EditButtonControl
                 {device}

@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { gte as semverGte } from "semver";
-
   import { configuration } from "$lib/state/configuration.svelte";
 
   import CheckOption from "$lib/components/CheckOption.svelte";
-  import { deviceHasCapability, deviceForId } from "$lib/configuration";
+  import { deviceForId, deviceHasCapability } from "$lib/configuration";
 
   let device = $derived(
     configuration.current && deviceForId(configuration.current.deviceId),

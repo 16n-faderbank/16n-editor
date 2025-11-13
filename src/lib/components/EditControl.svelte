@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    deviceForId,
-    deviceHasCapability,
-    labelForControl,
-  } from "$lib/configuration";
+  import { deviceHasCapability, labelForControl } from "$lib/configuration";
   import { configuration } from "$lib/state/configuration.svelte";
 
   import type { Control, Device } from "$lib/types";

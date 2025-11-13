@@ -23,12 +23,26 @@ export default ts.config(
     },
   },
   {
-    files: ["**/*.svelte"],
+    files: ["**/*.svelte", "**/*.svelte.ts"],
 
     languageOptions: {
       parserOptions: {
         parser: ts.parser,
       },
+    },
+  },
+  {
+    rules: {
+      "svelte/require-each-key": "off",
+      "svelte/no-navigation-without-resolve": [
+        "error",
+        {
+          ignoreGoto: false,
+          ignoreLinks: true,
+          ignorePushState: false,
+          ignoreReplaceState: false,
+        },
+      ],
     },
   },
 );
