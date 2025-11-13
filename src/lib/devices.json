@@ -57,5 +57,13 @@
     },
     "latestFirmwareVersion": "3.1.1",
     "firmwareUrl": "https://github.com/16n-faderbank/16next_firmware/releases/latest"
+  },
+  {
+    "name": "8mu2040",
+    "controlCount": 16,
+    "capabilities": {
+      "led": true
+    },
+    "latestFirmwareVersion": "0.3.0"
   }
 ]
