@@ -182,7 +182,11 @@
       <div id="controls">
         {#each configuration.editing.usbControls as editControl, index}
           {#if device && index < device.controlCount}
-            <EditControl {device} {editControl} {index} />
+            <EditControl
+              {device}
+              bind:editControl={configuration.editing.usbControls[index]}
+              {index}
+            />
           {/if}
         {/each}
       </div>
@@ -218,7 +222,11 @@
       <div id="controls">
         {#each configuration.editing.trsControls as editControl, index}
           {#if device && index < device.controlCount}
-            <EditControl {device} {editControl} {index} />
+            <EditControl
+              {device}
+              bind:editControl={configuration.editing.trsControls[index]}
+              {index}
+            />
           {/if}
         {/each}
       </div>
@@ -255,7 +263,13 @@
         <div id="controls">
           {#each configuration.editing.usbButtonControls as editControl, index}
             {#if device && index < device.controlCount}
-              <EditButtonControl {device} {editControl} {index} />
+              <EditButtonControl
+                {device}
+                bind:editControl={
+                  configuration.editing.usbButtonControls![index]
+                }
+                {index}
+              />
             {/if}
           {/each}
         </div>
@@ -264,7 +278,13 @@
         <div id="controls">
           {#each configuration.editing.trsButtonControls as editControl, index}
             {#if device && index < device.controlCount}
-              <EditButtonControl {device} {editControl} {index} />
+              <EditButtonControl
+                {device}
+                bind:editControl={
+                  configuration.editing.trsButtonControls![index]
+                }
+                {index}
+              />
             {/if}
           {/each}
         </div>
