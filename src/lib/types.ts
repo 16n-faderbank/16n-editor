@@ -8,14 +8,16 @@ export type Control = {
 };
 
 export type ControllerConfiguration = {
-  ledOn: boolean;
+  ledOn?: boolean;
   ledFlash: boolean;
+  ledFlashAccel?: boolean;
   controllerFlip: boolean;
   midiThru: boolean;
   deviceId: number;
   i2cLeader: boolean;
   faderMin: number;
   faderMax: number;
+  trsMode?: number;
   firmwareVersion: string;
   usbControls: Control[];
   trsControls: Control[];
@@ -25,6 +27,9 @@ export type ControllerConfiguration = {
 
 export type DeviceCapability =
   | "led"
+  | "8muLed"
+  | "midiThru"
+  | "softwareTrsToggle"
   | "i2c"
   | "faderCalibration"
   | "highResolution";
@@ -36,4 +41,5 @@ export type Device = {
   sendShortMessages?: boolean;
   latestFirmwareVersion?: string;
   firmwareUrl?: string;
+  controlLabels?: string[];
 };

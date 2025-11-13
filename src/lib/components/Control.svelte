@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type { Control } from "$lib/types";
+  import { labelForControl } from "$lib/configuration";
+  import type { Control, Device } from "$lib/types";
 
   interface Props {
     control: Control;
     index: number;
+    device: Device;
     disableValue?: boolean;
   }
 
-  let { control, index, disableValue = false }: Props = $props();
+  let { control, index, disableValue = false, device }: Props = $props();
 
   let barHeight = $derived(
     control.highResolution ? (control.val || 0) >> 7 : control.val,
@@ -17,7 +19,7 @@
 </script>
 
 <dl class="config-column">
-  <dt class="index">{index + 1}</dt>
+  <dt class="index">{labelForControl(device, index)}</dt>
   <dt>Channel</dt>
   <dd>{control.channel}</dd>
   <dt>CC</dt>

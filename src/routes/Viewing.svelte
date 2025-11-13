@@ -48,7 +48,7 @@
       <div id="controls">
         {#each configuration.current.usbControls as control, index}
           {#if device && index < device.controlCount}
-            <Control {control} {index} />
+            <Control {device} {control} {index} />
           {/if}
         {/each}
       </div>
@@ -58,7 +58,7 @@
       <div id="controls">
         {#each configuration.current.trsControls as control, index}
           {#if device && index < device.controlCount}
-            <Control {control} {index} disableValue={true} />
+            <Control {device} {control} {index} disableValue={true} />
           {/if}
         {/each}
       </div>
