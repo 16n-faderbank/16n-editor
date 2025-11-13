@@ -8,7 +8,7 @@ on:
 jobs:
   prettier:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    if: github.event_name == 'push' && github.event.pull_request.draft == false
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
