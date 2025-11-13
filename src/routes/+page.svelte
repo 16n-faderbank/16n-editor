@@ -11,6 +11,7 @@
     listenForSysex,
     listenForCC,
     doRequestConfig,
+    listenForNotes,
   } from "$lib/midi/midi.svelte";
   import { sendFactoryResetRequest } from "$lib/midi/sysex";
 
@@ -44,6 +45,7 @@
       });
       listenForCC(midiState.selectedInput);
       listenForSysex(midiState.selectedInput);
+      listenForNotes(midiState.selectedInput);
       configuration.current = null;
       doRequestConfig();
     }

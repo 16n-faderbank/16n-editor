@@ -42,6 +42,7 @@ export const configFromSysexArray = (
     if (chan != 0x7f) {
       usbControls[i] = {
         channel: chan,
+        val: 0,
       };
     }
   });
@@ -83,6 +84,7 @@ export const configFromSysexArray = (
         mode,
         paramA,
         paramB,
+        pressed: false,
       });
     }
   }
