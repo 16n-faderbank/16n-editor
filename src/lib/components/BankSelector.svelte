@@ -1,6 +1,8 @@
 <script lang="ts">
   import { deviceForId } from "$lib/configuration";
   import { configuration } from "$lib/state/configuration.svelte";
+  import { sendProgChange } from "$lib/midi/progchange";
+  import { midiState } from "$lib/state/midi.svelte";
 
   let device = $derived(
     configuration.current ? deviceForId(configuration.current.deviceId) : null,
@@ -27,7 +29,7 @@
     {#each deviceBanks as bank, i}
       <button
         class:selected={i == configuration.currentBank}
-        onclick={() => (configuration.currentBank = bank)}
+        onclick={() => changeBank(bank)}
       >
         {bank + 1}
       </button>
