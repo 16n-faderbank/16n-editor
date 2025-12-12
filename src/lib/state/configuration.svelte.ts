@@ -5,4 +5,5 @@ export const configuration = $state({
   controllerMightNeedFactoryReset: false,
   editing: null as ControllerConfiguration | null,
   editMode: false,
+  currentBank: 0 as number,
 });

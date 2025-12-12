@@ -69,7 +69,8 @@
     "capabilities": {
       "8muLed": true,
       "softwareTrsToggle": true,
-      "midiThru": true
+      "midiThru": true,
+      "banks": 8
     },
     "latestFirmwareVersion": "0.3.0",
     "controlLabels": [
@@ -90,6 +91,11 @@
       "ʎɐʍ sᴉɥʇ",
       "this way"
     ],
-    "buttonControlLabels": ["Button A", "Button B", "Button C", "Button D"]
+    "buttonControlLabels": [
+      "Button A",
+      "Button B",
+      "Button C",
+      "Button D"
+    ]
   }
 ]

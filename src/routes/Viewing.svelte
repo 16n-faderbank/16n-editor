@@ -1,4 +1,5 @@
 <script lang="ts">
+  import BankSelector from "$lib/components/BankSelector.svelte";
   import Button from "$lib/components/Button.svelte";
   import ButtonControl from "$lib/components/ButtonControl.svelte";
   import Control from "$lib/components/Control.svelte";
@@ -30,10 +31,17 @@
   let device = $derived(
     configuration.current ? deviceForId(configuration.current.deviceId) : null,
   );
+
+  let deviceBanks = $derived(
+    device?.capabilities.banks && device.capabilities.banks > 0
+      ? Array.from({ length: device.capabilities.banks }, (_, i) => i)
+      : [],
+  );
 </script>
 
 {#if configuration.current}
   <Subhead title="Current Configuration">
+    <BankSelector />
     <Button icon="file-export" onclick={doExportConfig}>
       Export current config
     </Button>
