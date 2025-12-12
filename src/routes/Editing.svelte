@@ -2,6 +2,7 @@
   import { logger } from "$lib/logger";
   import { gte as semverGte } from "semver";
 
+  import BankSelector from "$lib/components/BankSelector.svelte";
   import Button from "$lib/components/Button.svelte";
   import DeviceOptions from "$lib/components/DeviceOptions.svelte";
   import EditControl from "$lib/components/EditControl.svelte";
@@ -156,6 +157,7 @@
 </script>
 
 <Subhead title="Edit Configuration">
+  <BankSelector />
   <Button icon="times" onclick={cancelEditMode}>Cancel</Button>
   <Button icon="file-import" onclick={doImportConfig}>Import config</Button>
   <Button icon="download" onclick={transmitConfig} disabled={!configDirty}>
