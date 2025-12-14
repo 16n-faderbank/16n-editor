@@ -6,7 +6,11 @@ import type {
 } from "webmidi";
 import { WebMidi } from "webmidi";
 
-import { configFromSysexArray } from "$lib/configuration";
+import {
+  configFromSysexArray,
+  currentBankFromSysexArray,
+  deviceForId,
+} from "$lib/configuration";
 import { logger } from "$lib/logger";
 import { isOxionSysex, requestConfig } from "$lib/midi/sysex";
 import { configuration } from "$lib/state/configuration.svelte";
@@ -195,6 +199,13 @@ export const listenForSysex = (input: Input) => {
     if (data[4] == 0x0f) {
       // it's an c0nFig message!
       configuration.current = configFromSysexArray(data);
+
+      const device = deviceForId(configuration.current.deviceId);
+
+      if (device.capabilities.banks && device.capabilities.banks > 0) {
+        configuration.currentBank = currentBankFromSysexArray(data);
+      }
+
       logger("Received config", configuration.current);
 
       configTimeout = -1;
