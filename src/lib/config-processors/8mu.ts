@@ -1,5 +1,5 @@
 import type { Control, ControllerConfiguration, Device } from "$lib/types";
-import { parseFirmwareVersion } from "./shared";
+import { parseFirmwareVersion, combine14Bit } from "./shared";
 
 //
 // [
@@ -29,11 +29,17 @@ export const configFromSysexArray = (
   const offset = 9;
 
   // TODO: these need to be dynamic
-  const ledFlash = true;
-  const ledFlashAccel = false;
-  const controllerFlip = false;
-  const midiThru = false;
-  const trsMode = 0;
+  const ledFlash = data[0] == 1;
+  const ledFlashAccel = data[1] == 1;
+  const controllerFlip = data[2] == 1;
+
+  const faderMin = combine14Bit(data[5 + offset], data[6 + offset]);
+  const faderMax = combine14Bit(data[7 + offset], data[8 + offset]);
+
+  const midiThru = data[7] == 1;
+  const trsMode = data[8];
+
+  const currentBank = data[15];
 
   const usbControls: Partial<Control>[] = [];
   const trsControls: Partial<Control>[] = [];
@@ -113,11 +119,14 @@ export const configFromSysexArray = (
     midiThru,
     usbControls,
     trsControls,
+    faderMax,
+    faderMin,
     usbButtonControls,
     trsButtonControls,
     deviceId,
     device,
     firmwareVersion,
+    currentBank,
   } as ControllerConfiguration;
 };
 
@@ -185,3 +194,5 @@ export const toSysexArray = (
 
   return array;
 };
+
+export const currentBankFromSysexArray = (data: number[]) => data[15] - 1;

@@ -146,6 +146,18 @@ export const configFromSysexArray = (data: number[]) => {
   );
 };
 
+export const currentBankFromSysexArray = (data: number[]) => {
+  logger("Generating config from", data);
+
+  const deviceId = data[5];
+  const device = deviceForId(deviceId);
+
+  const processor = getProcessorForDevice(device);
+  if (processor.currentBankFromSysexArray !== undefined) {
+    return processor.currentBankFromSysexArray(data);
+  }
+};
+
 export const deviceForId = (id: number) => allKnownDevices[id];
 
 export const deviceHasCapability = (

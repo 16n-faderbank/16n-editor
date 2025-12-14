@@ -13,6 +13,8 @@ export interface ConfigProcessor {
     firmwareVersion: string,
   ) => ControllerConfiguration;
 
+  currentBankFromSysexArray?: (data: number[]) => number;
+
   toSysexArray: (config: ControllerConfiguration, device: Device) => number[];
 }
 
