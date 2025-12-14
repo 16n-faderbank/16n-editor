@@ -203,7 +203,7 @@ export const listenForSysex = (input: Input) => {
       const device = deviceForId(configuration.current.deviceId);
 
       if (device.capabilities.banks && device.capabilities.banks > 0) {
-        configuration.currentBank = currentBankFromSysexArray(data);
+        configuration.currentBank = currentBankFromSysexArray(data) as number;
       }
 
       logger("Received config", configuration.current);
