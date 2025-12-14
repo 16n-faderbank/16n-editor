@@ -1,3 +1,4 @@
+import { logger } from "$lib/logger";
 import type { Control, ControllerConfiguration, Device } from "$lib/types";
 import { parseFirmwareVersion, combine14Bit } from "./shared";
 
@@ -26,23 +27,28 @@ export const configFromSysexArray = (
 ): ControllerConfiguration => {
   // TODO: Implement 8mu-specific parsing
   // This is work in progress; currently, this is just parsing a _single bank_ of 8mu data.
-  const offset = 9;
+  let offset = 6 + 4 - 1;
 
   // TODO: these need to be dynamic
-  const ledFlash = data[0] == 1;
-  const ledFlashAccel = data[1] == 1;
-  const controllerFlip = data[2] == 1;
+  const ledFlash = data[offset + 0] == 1;
+  const ledFlashAccel = data[offset + 1] == 1;
+  const controllerFlip = data[offset + 2] == 1;
 
-  const faderMin = combine14Bit(data[5 + offset], data[6 + offset]);
-  const faderMax = combine14Bit(data[7 + offset], data[8 + offset]);
+  // const faderMin = combine14Bit(data[5 + offset], data[6 + offset]);
+  // const faderMax = combine14Bit(data[7 + offset], data[8 + offset]);
+  const faderMin = 0;
+  const faderMax = 16383;
 
-  const midiThru = data[7] == 1;
-  const trsMode = data[8];
+  const midiThru = data[offset + 7] == 1;
+  const trsMode = data[offset + 8];
 
-  const currentBank = data[15];
+  const currentBank = data[offset + 15];
+  console.log("Current bank:", currentBank);
 
   const usbControls: Partial<Control>[] = [];
   const trsControls: Partial<Control>[] = [];
+
+  offset = 6 + 4 + 16 - 1; // skid Sysex header + device header
 
   data.slice(0 + offset, 16 + offset).forEach((chan, i) => {
     if (chan != 0x7f) {
@@ -195,4 +201,4 @@ export const toSysexArray = (
   return array;
 };
 
-export const currentBankFromSysexArray = (data: number[]) => data[15] - 1;
+export const currentBankFromSysexArray = (data: number[]) => data[24];
