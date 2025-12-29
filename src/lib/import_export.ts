@@ -64,11 +64,13 @@ export const exportConfig = (configObject: ControllerConfiguration) => {
     "data:text/json;charset=utf-8," +
     encodeURIComponent(configToJsonString(configObject));
 
+  const device = deviceForId(configObject.deviceId);
+  const hasBanks = device.capabilities.banks;
+  const bankSuffix = hasBanks ? `_bank${configuration.currentBank + 1}` : "";
+
   const downloadAnchorNode = document.createElement("a");
   downloadAnchorNode.href = dataStr;
-  downloadAnchorNode.download = `${
-    deviceForId(configObject.deviceId).name
-  }_controller_config.json`;
+  downloadAnchorNode.download = `${device.name}${bankSuffix}_controller_config.json`;
   document.body.appendChild(downloadAnchorNode); // required for firefox
   downloadAnchorNode.click();
   downloadAnchorNode.remove();

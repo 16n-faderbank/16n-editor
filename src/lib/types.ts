@@ -42,13 +42,14 @@ export type DeviceCapability =
   | "softwareTrsToggle"
   | "i2c"
   | "faderCalibration"
-  | "highResolution";
+  | "highResolution"
+  | "banks";
 
 export type Device = {
   name: string;
   controlCount: number;
   buttonCount?: number;
-  capabilities: Partial<Record<DeviceCapability, string | boolean>>;
+  capabilities: Partial<Record<DeviceCapability, string | boolean | number>>;
   sendShortMessages?: boolean;
   latestFirmwareVersion?: string;
   firmwareUrl?: string;
