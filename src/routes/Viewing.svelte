@@ -31,12 +31,6 @@
   let device = $derived(
     configuration.current ? deviceForId(configuration.current.deviceId) : null,
   );
-
-  let deviceBanks = $derived(
-    device?.capabilities.banks && device.capabilities.banks > 0
-      ? Array.from({ length: device.capabilities.banks }, (_, i) => i)
-      : [],
-  );
 </script>
 
 {#if configuration.current}

@@ -1,6 +1,5 @@
-import { logger } from "$lib/logger";
 import type { Control, ControllerConfiguration, Device } from "$lib/types";
-import { parseFirmwareVersion, combine14Bit } from "./shared";
+import { parseFirmwareVersion } from "./shared";
 
 //
 // [
