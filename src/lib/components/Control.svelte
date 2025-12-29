@@ -19,7 +19,7 @@
 </script>
 
 <dl class="config-column">
-  <dt class="index">{labelForControl(device, index)}</dt>
+  <dt class="index">{@html labelForControl(device, index)}</dt>
   <dt>Channel</dt>
   <dd>{control.channel}</dd>
   <dt>CC</dt>
