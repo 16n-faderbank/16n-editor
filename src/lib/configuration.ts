@@ -179,7 +179,7 @@ export const deviceHasCapability = (
 
 export const labelForControl = (device: Device, controlIndex: number) => {
   if (!device.controlLabels) {
-    return `Control ${controlIndex + 1}`;
+    return `Control<br/> ${controlIndex + 1}`;
   }
 
   return device.controlLabels[controlIndex] || `${controlIndex + 1}`;
