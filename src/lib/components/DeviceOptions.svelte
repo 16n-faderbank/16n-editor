@@ -60,9 +60,9 @@
       You shouldn't touch this unless you are having issues with your faders
       either reaching <code>127</code>
       before the end of their travel, or not at all.<br /><br />
-      "Raw" analog values are read from the faders between 0 and 8192. Bring the
-      fader maximum down until all faders smoothly travel from 0 to 127 on the debug
-      view (bearing in mind there is a small dead zone at either end of a fader).
+      "Raw" analog values are read from the faders between 0 and 8192. Bring the fader
+      maximum down until all faders smoothly travel from 0 to 127 on the debug view
+      (bearing in mind there is a small dead zone at either end of a fader).
     </p>
   {/if}
 
