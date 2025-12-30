@@ -119,7 +119,7 @@
     if (type == "trs") {
       const chan = configuration.editing.trsControls[0].channel;
       for (let i = 1; i < configuration.editing.trsControls.length; i++) {
-        configuration.editing.usbControls[i].channel = chan;
+        configuration.editing.trsControls[i].channel = chan;
       }
     }
   };
