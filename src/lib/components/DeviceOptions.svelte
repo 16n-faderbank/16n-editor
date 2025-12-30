@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { gte as semverGte } from "semver";
-
   import { configuration } from "$lib/state/configuration.svelte";
 
   import CheckOption from "$lib/components/CheckOption.svelte";
-  import { deviceHasCapability, deviceForId } from "$lib/configuration";
+  import { deviceForId, deviceHasCapability } from "$lib/configuration";
 
   let device = $derived(
     configuration.current && deviceForId(configuration.current.deviceId),
@@ -22,14 +20,43 @@
     >
   {/if}
 
+  {#if deviceHasCapability(device, "8muLed", configuration.current.firmwareVersion)}
+    <CheckOption bind:checked={configuration.editing.ledFlash}
+      >LED flash on fader activity</CheckOption
+    >
+
+    <CheckOption bind:checked={configuration.editing.ledFlashAccel}
+      >LED flash on accelerometer activity</CheckOption
+    >
+  {/if}
+
   <CheckOption bind:checked={configuration.editing.controllerFlip}
     >Rotate controller 180º</CheckOption
   >
 
-  {#if semverGte(configuration.current.firmwareVersion, "2.1.0")}
+  {#if deviceHasCapability(device, "midiThru", configuration.current.firmwareVersion)}
     <CheckOption bind:checked={configuration.editing.midiThru}>
       Soft MIDI thru (echo MIDI clock/note data sent to USB out of the minijack)
     </CheckOption>
+  {/if}
+
+  {#if deviceHasCapability(device, "softwareTrsToggle", configuration.current.firmwareVersion)}
+    <hr />
+    <h3>TRS MIDI type</h3>
+    <select bind:value={configuration.editing.trsMode}>
+      <option value={0}>Type A</option>
+      <option value={1}>Type B</option>
+    </select>
+
+    <p class="note">
+      <strong>Type A:</strong> Korg, MakeNoise, etc (Tip is Sink, Ring is
+      Source).<br />
+      <strong>Type B:</strong> Arturia, Novation, etc (Tip is Source, Ring is
+      Sink).<br />
+    </p>
+    <p class="note">
+      More details at <a href="https://minimidi.world/">minimidi.world</a>
+    </p>
   {/if}
 
   {#if deviceHasCapability(device, "faderCalibration", configuration.current.firmwareVersion)}

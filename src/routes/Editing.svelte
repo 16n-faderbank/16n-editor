@@ -2,9 +2,11 @@
   import { logger } from "$lib/logger";
   import { gte as semverGte } from "semver";
 
+  import BankSelector from "$lib/components/BankSelector.svelte";
   import Button from "$lib/components/Button.svelte";
   import DeviceOptions from "$lib/components/DeviceOptions.svelte";
   import EditControl from "$lib/components/EditControl.svelte";
+  import EditButtonControl from "$lib/components/EditButtonControl.svelte";
   import FactoryReset from "$lib/components/FactoryReset.svelte";
   import Subhead from "$lib/components/Subhead.svelte";
   import ExplainHiResMode from "$lib/components/ExplainHiResMode.svelte";
@@ -155,6 +157,7 @@
 </script>
 
 <Subhead title="Edit Configuration">
+  <BankSelector />
   <Button icon="times" onclick={cancelEditMode}>Cancel</Button>
   <Button icon="file-import" onclick={doImportConfig}>Import config</Button>
   <Button icon="download" onclick={transmitConfig} disabled={!configDirty}>
@@ -167,6 +170,10 @@
     <TabList>
       <Tab>USB</Tab>
       <Tab>TRS Jack</Tab>
+      {#if device?.buttonCount && device.buttonCount > 0}
+        <Tab>USB Buttons</Tab>
+        <Tab>TRS Buttons</Tab>
+      {/if}
       <Tab>Device Options</Tab>
       {#if configuration.current && semverGte(configuration.current.firmwareVersion, "2.1.0")}
         <Tab>Factory Reset</Tab>
@@ -175,9 +182,13 @@
 
     <TabPanel>
       <div id="controls">
-        {#each configuration.editing.usbControls as editControl, index}
+        {#each { length: configuration.editing.usbControls.length }, index}
           {#if device && index < device.controlCount}
-            <EditControl {editControl} {index} />
+            <EditControl
+              {device}
+              bind:editControl={configuration.editing.usbControls[index]}
+              {index}
+            />
           {/if}
         {/each}
       </div>
@@ -211,9 +222,13 @@
 
     <TabPanel>
       <div id="controls">
-        {#each configuration.editing.trsControls as editControl, index}
+        {#each { length: configuration.editing.trsControls.length }, index}
           {#if device && index < device.controlCount}
-            <EditControl {editControl} {index} />
+            <EditControl
+              {device}
+              bind:editControl={configuration.editing.trsControls[index]}
+              {index}
+            />
           {/if}
         {/each}
       </div>
@@ -244,6 +259,39 @@
         <ExplainHiResMode />
       {/if}
     </TabPanel>
+
+    {#if device?.buttonCount && device.buttonCount > 0}
+      <TabPanel>
+        <div id="controls">
+          {#each { length: configuration.editing.usbButtonControls!.length }, index}
+            {#if device && index < device.controlCount}
+              <EditButtonControl
+                {device}
+                bind:editControl={
+                  configuration.editing.usbButtonControls![index]
+                }
+                {index}
+              />
+            {/if}
+          {/each}
+        </div>
+      </TabPanel>
+      <TabPanel>
+        <div id="controls">
+          {#each { length: configuration.editing.trsButtonControls!.length }, index}
+            {#if device && index < device.controlCount}
+              <EditButtonControl
+                {device}
+                bind:editControl={
+                  configuration.editing.trsButtonControls![index]
+                }
+                {index}
+              />
+            {/if}
+          {/each}
+        </div>
+      </TabPanel>
+    {/if}
 
     <TabPanel>
       <DeviceOptions />
