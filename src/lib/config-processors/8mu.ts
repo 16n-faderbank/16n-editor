@@ -139,10 +139,7 @@ export const toSysexArray = (
   config: ControllerConfiguration,
   // device: Device,
 ): number[] => {
-  // TODO: Implement 8mu-specific serialization
-  // This is, again. WIP
-
-  const array = Array.from({ length: 84 }, () => 0);
+  const array = Array.from({ length: 4 + 16 + 96 }, () => 0);
   const versionArray = parseFirmwareVersion(config.firmwareVersion);
 
   array[0] = config.deviceId;
@@ -150,11 +147,14 @@ export const toSysexArray = (
   array[2] = versionArray[1];
   array[3] = versionArray[2];
 
-  // array[4] = config.ledOn ? 1 : 0;
-  // array[5] = config.ledFlash ? 1 : 0;
-  // array[6] = config.controllerFlip ? 1 : 0;
+  const dataStart = 4;
 
-  // array[7] = config.i2cLeader ? 1 : 0;
+  array[dataStart + 0] = config.ledFlash ? 1 : 0;
+  // array[5] = config.ledFlash ? 1 : 0;
+  array[dataStart + 1] = 0; // accel flash disable for now
+  array[dataStart + 2] = config.controllerFlip ? 1 : 0;
+  array[dataStart + 7] = config.midiThru ? 1 : 0;
+  array[dataStart + 8] = config.trsMode ? 1 : 0;
 
   // const [faderMinLSB, faderMinMSB] = split14Bit(config.faderMin);
   // array[8] = faderMinLSB;
@@ -164,12 +164,15 @@ export const toSysexArray = (
   // array[10] = faderMaxLSB;
   // array[11] = faderMaxMSB;
 
-  // array[12] = config.midiThru ? 1 : 0;
+  // index 15 is for currentBank. That's not inside `config`
+  // however: it _should_ be both the currentbank on device and in editor _anyway_
+  // so we don't need to transmit it back to the 8mu
+  // array[dataStart+15] = config.currentBank
 
-  const usbChannelOffset = 4;
-  const trsChannelOffset = 36;
-  const usbControlOffset = 20;
-  const trsControlOffset = 52;
+  const usbChannelOffset = dataStart + 16;
+  const trsChannelOffset = dataStart + 32;
+  const usbControlOffset = dataStart + 48;
+  const trsControlOffset = dataStart + 64;
 
   config.usbControls.forEach((control, index) => {
     array[index + usbChannelOffset] = control.channel;
@@ -180,8 +183,8 @@ export const toSysexArray = (
     array[index + trsControlOffset] = control.cc;
   });
 
-  const usbButtonOffset = 68;
-  const trsButtonOffset = 84;
+  const usbButtonOffset = dataStart + 80;
+  const trsButtonOffset = dataStart + 96;
 
   config.usbButtonControls?.forEach((control, index) => {
     array[index * 4 + usbButtonOffset] = control.channel;
