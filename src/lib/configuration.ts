@@ -5,6 +5,7 @@ import allKnownDevices from "./devices.json";
 import { getProcessorForDevice } from "$lib/config-processors";
 
 import type {
+  ButtonControl,
   Control,
   ControllerConfiguration,
   Device,
@@ -38,29 +39,74 @@ export const isEquivalent = (
   let usbEquivalent = true;
   let trsEquivalent = true;
 
-  configA.usbControls.forEach((control: Control, i: number) => {
-    const otherControl = configB.usbControls[i];
-    if (
-      control.channel != otherControl.channel ||
-      control.cc != otherControl.cc ||
-      control.highResolution != otherControl.highResolution
-    ) {
-      usbEquivalent = false;
-    }
-  });
+  if (
+    configA.usbControls.find((control: Control, i: number) => {
+      const otherControl = configB.usbControls[i];
+      return (
+        control.channel != otherControl.channel ||
+        control.cc != otherControl.cc ||
+        control.highResolution != otherControl.highResolution
+      );
+    })
+  ) {
+    usbEquivalent = false;
+  }
 
-  configA.trsControls.forEach((control: Control, i: number) => {
-    const otherControl = configB.trsControls[i];
-    if (
-      control.channel != otherControl.channel ||
-      control.cc != otherControl.cc ||
-      control.highResolution != otherControl.highResolution
-    ) {
-      trsEquivalent = false;
-    }
-  });
+  if (
+    configA.trsControls.find((control: Control, i: number) => {
+      const otherControl = configB.trsControls[i];
+      return (
+        control.channel != otherControl.channel ||
+        control.cc != otherControl.cc ||
+        control.highResolution != otherControl.highResolution
+      );
+    })
+  ) {
+    trsEquivalent = false;
+  }
 
-  return optionEquivalents && usbEquivalent && trsEquivalent;
+  let usbButtonsEquivalent = true;
+  let trsButtonsEquivalent = true;
+
+  if (
+    configA.usbButtonControls &&
+    configB.usbButtonControls &&
+    configA.usbButtonControls.find((button: ButtonControl, i: number) => {
+      const otherButton = configB.usbButtonControls[i];
+      return (
+        button.channel != otherButton.channel ||
+        button.mode != otherButton.mode ||
+        button.paramA != otherButton.paramA ||
+        button.paramB != otherButton.paramB
+      );
+    })
+  ) {
+    usbButtonsEquivalent = false;
+  }
+
+  if (
+    configA.trsButtonControls &&
+    configB.trsButtonControls &&
+    configA.trsButtonControls.find((button: ButtonControl, i: number) => {
+      const otherButton = configB.trsButtonControls[i];
+      return (
+        button.channel != otherButton.channel ||
+        button.mode != otherButton.mode ||
+        button.paramA != otherButton.paramA ||
+        button.paramB != otherButton.paramB
+      );
+    })
+  ) {
+    trsButtonsEquivalent = false;
+  }
+
+  return (
+    optionEquivalents &&
+    usbEquivalent &&
+    trsEquivalent &&
+    usbButtonsEquivalent &&
+    trsButtonsEquivalent
+  );
 };
 
 export const toSysexArray = (config: ControllerConfiguration) => {
