@@ -49,7 +49,7 @@
 </script>
 
 <dl class="config-column">
-  <dt class="index">{labelForControl(device, index)}</dt>
+  <dt class="index">{@html labelForControl(device, index)}</dt>
   <dt class="no-top-border">Channel</dt>
   <dd>
     <select bind:value={editControl.channel}>
