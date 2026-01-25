@@ -2,8 +2,10 @@ import { gte } from "semver";
 
 import { logger } from "$lib/logger";
 import allKnownDevices from "./devices.json";
+import { getProcessorForDevice } from "$lib/config-processors";
 
 import type {
+  ButtonControl,
   Control,
   ControllerConfiguration,
   Device,
@@ -17,8 +19,10 @@ export const isEquivalent = (
   let optionEquivalents =
     configA.ledOn == configB.ledOn &&
     configA.ledFlash == configB.ledFlash &&
+    configA.ledFlashAccel == configB.ledFlashAccel &&
     configA.controllerFlip == configB.controllerFlip &&
-    configA.midiThru == configB.midiThru;
+    configA.midiThru == configB.midiThru &&
+    configA.trsMode == configB.trsMode;
 
   if ("i2cLeader" in configA || "i2cLeader" in configB) {
     optionEquivalents =
@@ -35,99 +39,80 @@ export const isEquivalent = (
   let usbEquivalent = true;
   let trsEquivalent = true;
 
-  configA.usbControls.forEach((control: Control, i: number) => {
-    const otherControl = configB.usbControls[i];
-    if (
-      control.channel != otherControl.channel ||
-      control.cc != otherControl.cc ||
-      control.highResolution != otherControl.highResolution
-    ) {
-      usbEquivalent = false;
-    }
-  });
+  if (
+    configA.usbControls.find((control: Control, i: number) => {
+      const otherControl = configB.usbControls[i];
+      return (
+        control.channel != otherControl.channel ||
+        control.cc != otherControl.cc ||
+        control.highResolution != otherControl.highResolution
+      );
+    })
+  ) {
+    usbEquivalent = false;
+  }
 
-  configA.trsControls.forEach((control: Control, i: number) => {
-    const otherControl = configB.trsControls[i];
-    if (
-      control.channel != otherControl.channel ||
-      control.cc != otherControl.cc ||
-      control.highResolution != otherControl.highResolution
-    ) {
-      trsEquivalent = false;
-    }
-  });
+  if (
+    configA.trsControls.find((control: Control, i: number) => {
+      const otherControl = configB.trsControls[i];
+      return (
+        control.channel != otherControl.channel ||
+        control.cc != otherControl.cc ||
+        control.highResolution != otherControl.highResolution
+      );
+    })
+  ) {
+    trsEquivalent = false;
+  }
 
-  return optionEquivalents && usbEquivalent && trsEquivalent;
+  let usbButtonsEquivalent = true;
+  let trsButtonsEquivalent = true;
+
+  if (
+    configA.usbButtonControls &&
+    configB.usbButtonControls &&
+    configA.usbButtonControls.find((button: ButtonControl, i: number) => {
+      const otherButton = configB.usbButtonControls[i];
+      return (
+        button.channel != otherButton.channel ||
+        button.mode != otherButton.mode ||
+        button.paramA != otherButton.paramA ||
+        button.paramB != otherButton.paramB
+      );
+    })
+  ) {
+    usbButtonsEquivalent = false;
+  }
+
+  if (
+    configA.trsButtonControls &&
+    configB.trsButtonControls &&
+    configA.trsButtonControls.find((button: ButtonControl, i: number) => {
+      const otherButton = configB.trsButtonControls[i];
+      return (
+        button.channel != otherButton.channel ||
+        button.mode != otherButton.mode ||
+        button.paramA != otherButton.paramA ||
+        button.paramB != otherButton.paramB
+      );
+    })
+  ) {
+    trsButtonsEquivalent = false;
+  }
+
+  return (
+    optionEquivalents &&
+    usbEquivalent &&
+    trsEquivalent &&
+    usbButtonsEquivalent &&
+    trsButtonsEquivalent
+  );
 };
 
 export const toSysexArray = (config: ControllerConfiguration) => {
-  const array = Array.from({ length: 84 }, () => 0); // 84 is our _minimum_ length...
-  const versionArray = config.firmwareVersion
-    .trim()
-    .split(".")
-    .map((n) => parseInt(n));
-
-  array[0] = config.deviceId;
-  array[1] = versionArray[0];
-  array[2] = versionArray[1];
-  array[3] = versionArray[2];
-
-  array[4] = config.ledOn ? 1 : 0;
-  array[5] = config.ledFlash ? 1 : 0;
-  array[6] = config.controllerFlip ? 1 : 0;
-
-  array[7] = config.i2cLeader ? 1 : 0;
-
-  const faderminMSB = config.faderMin >> 7;
-  const faderminLSB = config.faderMin - (faderminMSB << 7);
-  array[8] = faderminLSB;
-  array[9] = faderminMSB;
-  const fadermaxMSB = config.faderMax >> 7;
-  const fadermaxLSB = config.faderMax - (fadermaxMSB << 7);
-  array[10] = fadermaxLSB;
-  array[11] = fadermaxMSB;
-
-  array[12] = config.midiThru ? 1 : 0;
-
-  const usbChannelOffset = 20;
-  const trsChannelOffset = 36;
-  const usbControlOffset = 52;
-  const trsControlOffset = 68;
-
-  config.usbControls.forEach((control, index) => {
-    array[index + usbChannelOffset] = control.channel;
-    array[index + usbControlOffset] = control.cc;
-  });
-  config.trsControls.forEach((control, index) => {
-    array[index + trsChannelOffset] = control.channel;
-    array[index + trsControlOffset] = control.cc;
-  });
-
-  // if you support high-res, we can actually append this to the end of an array;
-
-  if (
-    deviceHasCapability(
-      deviceForId(config.deviceId),
-      "highResolution",
-      versionArray.join("."),
-    )
-  ) {
-    const usbHighResOffset = 84;
-    const trsHighResOffset = 87;
-
-    const usbHighresData = packHiresConfig(config.usbControls);
-    const trsHighresData = packHiresConfig(config.trsControls);
-
-    usbHighresData.forEach((d, index) => {
-      array[usbHighResOffset + index] = usbHighresData[index];
-    });
-
-    trsHighresData.forEach((d, index) => {
-      array[trsHighResOffset + index] = trsHighresData[index];
-    });
-  }
-
-  return array;
+  const device = deviceForId(config.deviceId);
+  const processor = getProcessorForDevice(device);
+  return processor.toSysexArray(config, device);
 };
 
 export const toDeviceOptionsSysexArray = (config: ControllerConfiguration) => {
@@ -193,125 +178,30 @@ export const updateFromJson = (
 
 export const configFromSysexArray = (data: number[]) => {
   logger("Generating config from", data);
-  const offset = 8;
 
   const deviceId = data[5];
   const firmwareVersion = data[6] + "." + data[7] + "." + data[8];
-
-  const ledOn = data[1 + offset] == 1;
-  const ledFlash = data[2 + offset] == 1;
-  const controllerFlip = data[3 + offset] == 1;
-
-  const i2cLeader = data[4 + offset] == 1;
-
-  const faderminLSB = data[5 + offset];
-  const faderminMSB = data[6 + offset];
-  const faderMin = (faderminMSB << 7) + faderminLSB;
-
-  const fadermaxLSB = data[7 + offset];
-  const fadermaxMSB = data[8 + offset];
-  const faderMax = (fadermaxMSB << 7) + fadermaxLSB;
-
-  const midiThru = data[9 + offset] == 1;
-
-  const usbControls: Partial<Control>[] = [];
-  const trsControls: Partial<Control>[] = [];
-
-  data.slice(17 + offset, 33 + offset).forEach((chan, i) => {
-    if (chan != 0x7f) {
-      usbControls[i] = {
-        channel: chan,
-      };
-    }
-  });
-
-  data.slice(33 + offset, 49 + offset).forEach((chan, i) => {
-    if (chan != 0x7f) {
-      trsControls[i] = {
-        channel: chan,
-      };
-    }
-  });
-
-  data.slice(49 + offset, 65 + offset).forEach((cc, i) => {
-    if (cc != 0x7f) {
-      usbControls[i].cc = cc;
-    }
-  });
-
-  data.slice(65 + offset, 81 + offset).forEach((cc, i) => {
-    if (cc != 0x7f) {
-      trsControls[i].cc = cc;
-    }
-  });
-
-  usbControls.forEach((c) => (c.val = 0));
-
   const device = deviceForId(deviceId);
 
-  let usbHighResolution = Array.from(Array(16)).map(() => false);
-  let trsHighResolution = Array.from(Array(16)).map(() => false);
-
-  if (
-    device &&
-    deviceHasCapability(device, "highResolution", firmwareVersion)
-  ) {
-    const usbHiresConfig = data.slice(81 + offset, 84 + offset);
-    usbHighResolution = unpackHiresConfig(usbHiresConfig);
-
-    usbControls.forEach((control, i) => {
-      control.highResolution = usbHighResolution[i];
-    });
-
-    const trsHiresConfig = data.slice(84 + offset, 87 + offset);
-    trsHighResolution = unpackHiresConfig(trsHiresConfig);
-
-    trsControls.forEach((control, i) => {
-      control.highResolution = trsHighResolution[i];
-    });
-  }
-
-  return {
-    ledOn,
-    ledFlash,
-    controllerFlip,
-    midiThru,
-    usbControls,
-    trsControls,
+  const processor = getProcessorForDevice(device);
+  return processor.configFromSysexArray(
+    data,
+    device,
     deviceId,
     firmwareVersion,
-    i2cLeader,
-    faderMin,
-    faderMax,
-    usbHighResolution,
-    trsHighResolution,
-  } as ControllerConfiguration;
+  );
 };
 
-const unpackHiresConfig = (hiresConfig: number[]) => {
-  let numericValue = 0;
-  for (let i = 0; i < 3; i++) {
-    const mask = i == 2 ? 0x03 : 0x7f;
-    numericValue |= (hiresConfig[i] & mask) << (7 * i);
+export const currentBankFromSysexArray = (data: number[]) => {
+  logger("Generating config from", data);
+
+  const deviceId = data[5];
+  const device = deviceForId(deviceId);
+
+  const processor = getProcessorForDevice(device);
+  if (processor.currentBankFromSysexArray !== undefined) {
+    return processor.currentBankFromSysexArray(data);
   }
-
-  const booleanResult: boolean[] = [];
-  for (let i = 0; i < 16; i++) {
-    booleanResult.push((numericValue & (1 << i)) !== 0);
-  }
-
-  return booleanResult;
-};
-
-const packHiresConfig = (controls: Control[]) => {
-  let value = 0;
-  controls.forEach((control, i) => {
-    if (control.highResolution) {
-      value |= 1 << i;
-    }
-  });
-
-  return [value & 0x7f, (value >> 7) & 0x7f, (value >> 14) & 0x03];
 };
 
 export const deviceForId = (id: number) => allKnownDevices[id];
@@ -331,4 +221,22 @@ export const deviceHasCapability = (
   }
 
   return gte(firmwareVersion, device.capabilities[capability]);
+};
+
+export const labelForControl = (device: Device, controlIndex: number) => {
+  if (!device.controlLabels) {
+    return `Control<br/> ${controlIndex + 1}`;
+  }
+
+  return device.controlLabels[controlIndex] || `${controlIndex + 1}`;
+};
+
+export const labelForButtonControl = (device: Device, controlIndex: number) => {
+  if (!device.buttonControlLabels) {
+    return `Button ${controlIndex + 1}`;
+  }
+
+  return (
+    device.buttonControlLabels[controlIndex] || `Button ${controlIndex + 1}`
+  );
 };

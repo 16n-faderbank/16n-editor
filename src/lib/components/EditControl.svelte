@@ -1,21 +1,18 @@
 <script lang="ts">
-  import { deviceHasCapability, deviceForId } from "$lib/configuration";
+  import { deviceHasCapability, labelForControl } from "$lib/configuration";
   import { configuration } from "$lib/state/configuration.svelte";
 
-  import type { Control } from "$lib/types";
+  import type { Control, Device } from "$lib/types";
 
   interface Props {
     index: number;
     editControl: Control;
+    device: Device;
   }
 
-  let { index, editControl = $bindable() }: Props = $props();
+  let { index, device, editControl = $bindable() }: Props = $props();
 
   let maxCC = $derived(editControl.highResolution ? 127 - 32 : 127);
-
-  let device = $derived(
-    configuration.editing ? deviceForId(configuration.editing.deviceId) : null,
-  );
 
   let deviceSupportsHighResolution = $derived(
     device &&
@@ -52,7 +49,7 @@
 </script>
 
 <dl class="config-column">
-  <dt class="index">{index + 1}</dt>
+  <dt class="index">{@html labelForControl(device, index)}</dt>
   <dt class="no-top-border">Channel</dt>
   <dd>
     <select bind:value={editControl.channel}>

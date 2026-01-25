@@ -1,5 +1,7 @@
 <script lang="ts">
+  import BankSelector from "$lib/components/BankSelector.svelte";
   import Button from "$lib/components/Button.svelte";
+  import ButtonControl from "$lib/components/ButtonControl.svelte";
   import Control from "$lib/components/Control.svelte";
   import Subhead from "$lib/components/Subhead.svelte";
   import { Tab, TabList, TabPanel, Tabs } from "$lib/components/tabs";
@@ -33,6 +35,7 @@
 
 {#if configuration.current}
   <Subhead title="Current Configuration">
+    <BankSelector />
     <Button icon="file-export" onclick={doExportConfig}>
       Export current config
     </Button>
@@ -43,12 +46,16 @@
     <TabList>
       <Tab>USB</Tab>
       <Tab>TRS Jack</Tab>
+      {#if device?.buttonCount && device.buttonCount > 0}
+        <Tab>USB Buttons</Tab>
+        <Tab>TRS Buttons</Tab>
+      {/if}
     </TabList>
     <TabPanel>
       <div id="controls">
         {#each configuration.current.usbControls as control, index}
           {#if device && index < device.controlCount}
-            <Control {control} {index} />
+            <Control {device} {control} {index} />
           {/if}
         {/each}
       </div>
@@ -58,12 +65,33 @@
       <div id="controls">
         {#each configuration.current.trsControls as control, index}
           {#if device && index < device.controlCount}
-            <Control {control} {index} disableValue={true} />
+            <Control {device} {control} {index} disableValue={true} />
           {/if}
         {/each}
       </div>
       <p>There is no realtime preview of the TRS outputs.</p>
     </TabPanel>
+
+    {#if device?.buttonCount && device.buttonCount > 0}
+      <TabPanel>
+        <div id="controls">
+          {#each configuration.current.usbButtonControls as control, index}
+            {#if device && index < device.controlCount}
+              <ButtonControl {device} {control} {index} />
+            {/if}
+          {/each}
+        </div>
+      </TabPanel>
+      <TabPanel>
+        <div id="controls">
+          {#each configuration.current.trsButtonControls as control, index}
+            {#if device && index < device.controlCount}
+              <ButtonControl {device} {control} {index} disableValue={true} />
+            {/if}
+          {/each}
+        </div>
+      </TabPanel>
+    {/if}
   </Tabs>
 {/if}
 

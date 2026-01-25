@@ -6,14 +6,18 @@ import type {
 } from "webmidi";
 import { WebMidi } from "webmidi";
 
-import { configFromSysexArray } from "$lib/configuration";
+import {
+  configFromSysexArray,
+  currentBankFromSysexArray,
+  deviceForId,
+} from "$lib/configuration";
 import { logger } from "$lib/logger";
 import { isOxionSysex, requestConfig } from "$lib/midi/sysex";
 import { configuration } from "$lib/state/configuration.svelte";
 
 import { midiState } from "$lib/state/midi.svelte";
 
-import type { Control } from "$lib/types";
+import type { Control, ButtonControl } from "$lib/types";
 
 type MidiInterface = Input | Output;
 
@@ -86,19 +90,19 @@ const setupMidiHeartBeat = () => {
 
 const doMidiHeartBeat = () => {
   if (!midiState.selectedInput && midiState.inputs.length > 0) {
-    const sixteenN = midiState.inputs.find((input) =>
-      input.name.match(/.*16n.*/),
+    const inputPort = midiState.inputs.find(
+      (input) => input.name.match(/.*16n.*/) || input.name.match(/.*8mu.*/),
     );
-    if (sixteenN) {
-      midiState.selectedInput = sixteenN;
+    if (inputPort) {
+      midiState.selectedInput = inputPort;
     }
   }
   if (!midiState.selectedOutput && midiState.outputs.length > 0) {
-    const sixteenN = midiState.outputs.find((output) =>
-      output.name.match(/.*16n.*/),
+    const outputPort = midiState.outputs.find(
+      (output) => output.name.match(/.*16n.*/) || output.name.match(/.*8mu.*/),
     );
-    if (sixteenN) {
-      midiState.selectedOutput = sixteenN;
+    if (outputPort) {
+      midiState.selectedOutput = outputPort;
     }
   }
 
@@ -109,6 +113,8 @@ const doMidiHeartBeat = () => {
   ) {
     listenForCC(midiState.selectedInput);
     listenForSysex(midiState.selectedInput);
+    listenForNotes(midiState.selectedInput);
+
     logger("Hearbeat requesting config.");
     doRequestConfig();
   }
@@ -145,6 +151,40 @@ const controllerMoved = (event: ControlChangeMessageEvent) => {
   }
 };
 
+export const listenForNotes = (input: Input) => {
+  logger(`Adding noteon/off listeners to ${input.name}`);
+  input.addListener("noteon", noteOn);
+  input.addListener("noteoff", noteOff);
+};
+
+const noteOn = (event: MessageEvent) => {
+  if (configuration.current && configuration.current.usbButtonControls) {
+    configuration.current.usbButtonControls.forEach((c: ButtonControl) => {
+      if (
+        event.message.channel == c.channel &&
+        event.message.data[1] == c.paramA &&
+        c.mode === 0
+      ) {
+        c.pressed = true;
+      }
+    });
+  }
+};
+
+const noteOff = (event: MessageEvent) => {
+  if (configuration.current && configuration.current.usbButtonControls) {
+    configuration.current.usbButtonControls.forEach((c: ButtonControl) => {
+      if (
+        event.message.channel == c.channel &&
+        event.message.data[1] == c.paramA &&
+        c.mode === 0
+      ) {
+        c.pressed = false;
+      }
+    });
+  }
+};
+
 export const listenForCC = (input: Input) => {
   input.addListener("controlchange", controllerMoved);
 };
@@ -159,13 +199,20 @@ export const listenForSysex = (input: Input) => {
     if (data[4] == 0x0f) {
       // it's an c0nFig message!
       configuration.current = configFromSysexArray(data);
+
+      const device = deviceForId(configuration.current.deviceId);
+
+      if (device.capabilities.banks && device.capabilities.banks > 0) {
+        configuration.currentBank = currentBankFromSysexArray(data) as number;
+      }
+
       logger("Received config", configuration.current);
 
       configTimeout = -1;
       configuration.controllerMightNeedFactoryReset = false;
     }
   });
-  logger("Attached sysex listener to ", input.name);
+  logger(`Attached sysex listener to ${input.name}`);
 };
 
 export const doRequestConfig = () => {
@@ -183,8 +230,8 @@ export const doRequestConfig = () => {
   const selectedOutput = midiState.selectedOutput;
 
   if (selectedInput && selectedOutput) {
-    logger("Requesting config over " + selectedOutput.name);
-    logger("Hoping to receive on " + selectedInput.name);
+    logger(`Requesting config over ${selectedOutput.name}`);
+    logger(`Hoping to receive on ${selectedInput.name}`);
     requestConfig(selectedOutput);
   }
 };
