@@ -10,6 +10,13 @@
 </script>
 
 {#if configuration.current && configuration.editing && device}
+  {#if device.capabilities.banks}
+    <div class="bank-notice">
+      Note: "Device Options" apply to the entire device <em
+        >regardless of bank</em
+      >
+    </div>
+  {/if}
   {#if deviceHasCapability(device, "led", configuration.current.firmwareVersion)}
     <CheckOption bind:checked={configuration.editing.ledOn}
       >LED permanently on when powered</CheckOption
@@ -23,10 +30,6 @@
   {#if deviceHasCapability(device, "8muLed", configuration.current.firmwareVersion)}
     <CheckOption bind:checked={configuration.editing.ledFlash}
       >LED flash on fader activity</CheckOption
-    >
-
-    <CheckOption bind:checked={configuration.editing.ledFlashAccel}
-      >LED flash on accelerometer activity</CheckOption
     >
   {/if}
 
@@ -127,5 +130,11 @@
   }
   label {
     font-weight: bold;
+  }
+
+  .bank-notice {
+    padding: 1rem;
+    max-width: 64ch;
+    background: #ccc;
   }
 </style>
