@@ -25,7 +25,7 @@
   }
 
   .subhead h2 {
-    flex: 1;
+    flex: 2;
     margin: 0;
   }
 
@@ -34,7 +34,7 @@
   }
 
   .subhead .details {
-    flex: 1;
+    flex: 3;
     text-align: right;
   }
 </style>
