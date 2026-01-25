@@ -1,21 +1,8 @@
 import type { Control, ControllerConfiguration, Device } from "$lib/types";
 import { parseFirmwareVersion } from "./shared";
 
-//
-// [
-// 240, 125, 0, 0, 15, 6, 0, 3, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-// 1, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 1, 1, 1, 1,
-// 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
-// 44, 45, 46, 47, 48, 49, 1, 0, 36, 64, 1, 0, 48, 64, 1, 0, 60, 64, 1, 0, 72,
-// 64, 1, 0, 36, 64, 1, 0, 48, 64, 1, 0, 60, 64, 1, 0, 72, 64, 247,
-// ];
-
 /**
  * Config processor for 8mu2040 devices
- *
- * TODO: Implement 8mu-specific data structure transforms
- * This is a placeholder that needs to be filled in based on
- * the 8mu2040's actual sysex format.
  */
 
 export const configFromSysexArray = (
@@ -24,11 +11,8 @@ export const configFromSysexArray = (
   deviceId: number,
   firmwareVersion: string,
 ): ControllerConfiguration => {
-  // TODO: Implement 8mu-specific parsing
-  // This is work in progress; currently, this is just parsing a _single bank_ of 8mu data.
   let offset = 6 + 4 - 1;
 
-  // TODO: these need to be dynamic
   const ledFlash = data[offset + 0] == 1;
   const ledFlashAccel = data[offset + 1] == 1;
   const controllerFlip = data[offset + 2] == 1;
@@ -150,8 +134,7 @@ export const toSysexArray = (
   const dataStart = 4;
 
   array[dataStart + 0] = config.ledFlash ? 1 : 0;
-  // array[5] = config.ledFlash ? 1 : 0;
-  array[dataStart + 1] = 0; // accel flash disable for now
+  array[dataStart + 1] = 0; // accel flash is disabled for now
   array[dataStart + 2] = config.controllerFlip ? 1 : 0;
   array[dataStart + 7] = config.midiThru ? 1 : 0;
   array[dataStart + 8] = config.trsMode ? 1 : 0;
