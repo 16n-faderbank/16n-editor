@@ -72,7 +72,7 @@
       "midiThru": true,
       "banks": 8
     },
-    "latestFirmwareVersion": "0.3.0",
+    "latestFirmwareVersion": "1.0.0",
     "controlLabels": [
       "Fader 1",
       "Fader 2",
