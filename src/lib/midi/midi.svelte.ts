@@ -10,6 +10,7 @@ import {
   configFromSysexArray,
   currentBankFromSysexArray,
   deviceForId,
+  isUnsupportedLegacy8mu,
 } from "$lib/configuration";
 import { logger } from "$lib/logger";
 import { isOxionSysex, requestConfig } from "$lib/midi/sysex";
@@ -81,6 +82,7 @@ const setupMidiHeartBeat = () => {
     midiState.selectedOutput = null;
 
     configuration.current = null;
+    configuration.unsupportedDevice = null;
     doMidiHeartBeat();
   });
   setInterval(() => {
@@ -108,6 +110,7 @@ const doMidiHeartBeat = () => {
 
   if (
     !configuration.current &&
+    !configuration.unsupportedDevice &&
     midiState.selectedInput &&
     midiState.selectedOutput
   ) {
@@ -198,6 +201,29 @@ export const listenForSysex = (input: Input) => {
     }
     if (data[4] == 0x0f) {
       // it's an c0nFig message!
+      const deviceId = data[5];
+      const firmwareVersion = `${data[6]}.${data[7]}.${data[8]}`;
+      const midiPortNames = [midiState.selectedInput, midiState.selectedOutput]
+        .filter((port) => port !== null)
+        .map((port) => `${port.manufacturer} ${port.name}`);
+
+      if (isUnsupportedLegacy8mu(deviceId, firmwareVersion, midiPortNames)) {
+        configuration.current = null;
+        configuration.editing = null;
+        configuration.editMode = false;
+        configuration.unsupportedDevice = {
+          name: "8mu v1",
+          firmwareVersion,
+        };
+        configuration.controllerMightNeedFactoryReset = false;
+        configTimeout = -1;
+        logger(
+          `Rejected 8mu v1 firmware ${firmwareVersion}; version 1.5.0 or later is required`,
+        );
+        return;
+      }
+
+      configuration.unsupportedDevice = null;
       configuration.current = configFromSysexArray(data);
 
       const device = deviceForId(configuration.current.deviceId);

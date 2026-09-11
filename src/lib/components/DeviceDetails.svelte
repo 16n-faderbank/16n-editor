@@ -3,7 +3,7 @@
 
   import { midiState } from "$lib/state/midi.svelte";
 
-  import { deviceForId } from "$lib/configuration";
+  import { deviceForId, displayNameForConfiguration } from "$lib/configuration";
   import { configuration } from "$lib/state/configuration.svelte";
 
   let upgradeString = $state("");
@@ -26,7 +26,7 @@
           configuration.current.firmwareVersion,
         )
       ) {
-        upgradeString = `A new version of the ${device.name} firmware (${device.latestFirmwareVersion}) is available.`;
+        upgradeString = `A new version of the ${displayNameForConfiguration(configuration.current)} firmware (${device.latestFirmwareVersion}) is available.`;
         upgradeUrl = device.firmwareUrl || "";
       } else {
         upgradeString = "";
@@ -39,10 +39,16 @@
 {#if midiState.webMidiEnabled}
   <div class="details">
     <!-- <MidiSelector /> -->
-    {#if configuration.current}
+    {#if configuration.unsupportedDevice}
+      <p class="device">
+        Unsupported: <strong>{configuration.unsupportedDevice.name}</strong>
+        running firmware
+        <strong>{configuration.unsupportedDevice.firmwareVersion}</strong>
+      </p>
+    {:else if configuration.current}
       <p class="device">
         Connected: <strong
-          >{deviceForId(configuration.current.deviceId).name}</strong
+          >{displayNameForConfiguration(configuration.current)}</strong
         >
         running firmware
         <strong>{configuration.current.firmwareVersion}</strong>

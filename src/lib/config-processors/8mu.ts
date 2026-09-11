@@ -11,6 +11,16 @@ export const configFromSysexArray = (
   deviceId: number,
   firmwareVersion: string,
 ): ControllerConfiguration => {
+  // 8mu v1 firmware writes "SAMD" into four bytes that are reserved in the
+  // existing 8mu configuration response. Shipped RP2040 units leave them zero.
+  // The protocol device ID remains 6 for backward and Radio Music compatibility.
+  const samdSignature = [0x53, 0x41, 0x4d, 0x44];
+  const hardwareVariant = samdSignature.every(
+    (value, index) => data[18 + index] === value,
+  )
+    ? "samd21"
+    : "rp2040";
+
   let offset = 6 + 4 - 1;
 
   const ledFlash = data[offset + 0] == 1;
@@ -115,6 +125,7 @@ export const configFromSysexArray = (
     deviceId,
     device,
     firmwareVersion,
+    hardwareVariant,
     currentBank,
   } as ControllerConfiguration;
 };

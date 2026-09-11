@@ -1,4 +1,4 @@
-import { gte } from "semver";
+import { gte, lt } from "semver";
 
 import { logger } from "$lib/logger";
 import allKnownDevices from "./devices.json";
@@ -135,6 +135,8 @@ export const toTRSOptionsSysexArray = (config: ControllerConfiguration) => {
 
 export const configToJsonString = (config: ControllerConfiguration) => {
   const o = { ...config };
+  // Hardware identity comes from the connected controller, not a settings file.
+  delete o.hardwareVariant;
   // truncate all controllers to length $length;
   const controllerCount = deviceForId(config.deviceId).controlCount;
 
@@ -170,7 +172,9 @@ export const updateFromJson = (
   json: ControllerConfiguration,
 ) => {
   Object.keys(json).forEach((key) => {
-    config[key] = json[key];
+    if (key !== "hardwareVariant") {
+      config[key] = json[key];
+    }
   });
 
   return config;
@@ -205,6 +209,28 @@ export const currentBankFromSysexArray = (data: number[]) => {
 };
 
 export const deviceForId = (id: number) => allKnownDevices[id];
+
+export const isUnsupportedLegacy8mu = (
+  deviceId: number,
+  firmwareVersion: string,
+  midiPortNames: string[],
+): boolean => {
+  return (
+    deviceId === 4 &&
+    lt(firmwareVersion, "1.5.0") &&
+    midiPortNames.some((name) => /8mu/i.test(name))
+  );
+};
+
+export const displayNameForConfiguration = (
+  config: ControllerConfiguration,
+): string => {
+  if (config.deviceId === 6) {
+    return config.hardwareVariant === "samd21" ? "8mu v1" : "8mu v2";
+  }
+
+  return deviceForId(config.deviceId).name;
+};
 
 export const deviceHasCapability = (
   device: Device,
