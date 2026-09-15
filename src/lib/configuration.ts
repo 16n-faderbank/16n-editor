@@ -123,6 +123,13 @@ export const toUSBOptionsSysexArray = (config: ControllerConfiguration) => {
   const fullArray = toSysexArray(config);
   const channels = fullArray.slice(20, 36);
   const ccs = fullArray.slice(52, 68);
+
+  const device = deviceForId(config.deviceId);
+  if (deviceHasCapability(device, "highResolution", config.firmwareVersion)) {
+     const highres = fullArray.slice(84, 87);
+     return channels.concat(ccs).concat(highres);
+  }
+
   return channels.concat(ccs);
 };
 
@@ -130,6 +137,13 @@ export const toTRSOptionsSysexArray = (config: ControllerConfiguration) => {
   const fullArray = toSysexArray(config);
   const channels = fullArray.slice(36, 52);
   const ccs = fullArray.slice(68, 84);
+
+  const device = deviceForId(config.deviceId);
+  if (deviceHasCapability(device, "highResolution", config.firmwareVersion)) {
+     const highres = fullArray.slice(87, 90);
+     return channels.concat(ccs).concat(highres);
+  }
+
   return channels.concat(ccs);
 };
 
