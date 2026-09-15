@@ -3,7 +3,7 @@
 
   import { midiState } from "$lib/state/midi.svelte";
 
-  import { deviceForId, displayNameForConfiguration } from "$lib/configuration";
+  import { deviceForId } from "$lib/configuration";
   import { configuration } from "$lib/state/configuration.svelte";
 
   let upgradeString = $state("");
@@ -26,7 +26,7 @@
           configuration.current.firmwareVersion,
         )
       ) {
-        upgradeString = `A new version of the ${displayNameForConfiguration(configuration.current)} firmware (${device.latestFirmwareVersion}) is available.`;
+        upgradeString = `A new version of the ${configuration.deviceName} firmware (${device.latestFirmwareVersion}) is available.`;
         upgradeUrl = device.firmwareUrl || "";
       } else {
         upgradeString = "";
@@ -47,9 +47,7 @@
       </p>
     {:else if configuration.current}
       <p class="device">
-        Connected: <strong
-          >{displayNameForConfiguration(configuration.current)}</strong
-        >
+        Connected: <strong>{configuration.deviceName}</strong>
         running firmware
         <strong>{configuration.current.firmwareVersion}</strong>
         {#if upgradeString.trim() != ""}

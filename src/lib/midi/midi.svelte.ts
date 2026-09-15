@@ -10,6 +10,7 @@ import {
   configFromSysexArray,
   currentBankFromSysexArray,
   deviceForId,
+  displayNameFromSysexArray,
   isUnsupportedLegacy8mu,
 } from "$lib/configuration";
 import { logger } from "$lib/logger";
@@ -82,6 +83,7 @@ const setupMidiHeartBeat = () => {
     midiState.selectedOutput = null;
 
     configuration.current = null;
+    configuration.deviceName = null;
     configuration.unsupportedDevice = null;
     doMidiHeartBeat();
   });
@@ -209,6 +211,7 @@ export const listenForSysex = (input: Input) => {
 
       if (isUnsupportedLegacy8mu(deviceId, firmwareVersion, midiPortNames)) {
         configuration.current = null;
+        configuration.deviceName = null;
         configuration.editing = null;
         configuration.editMode = false;
         configuration.unsupportedDevice = {
@@ -224,6 +227,7 @@ export const listenForSysex = (input: Input) => {
       }
 
       configuration.unsupportedDevice = null;
+      configuration.deviceName = displayNameFromSysexArray(data);
       configuration.current = configFromSysexArray(data);
 
       const device = deviceForId(configuration.current.deviceId);

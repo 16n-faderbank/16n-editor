@@ -135,8 +135,6 @@ export const toTRSOptionsSysexArray = (config: ControllerConfiguration) => {
 
 export const configToJsonString = (config: ControllerConfiguration) => {
   const o = { ...config };
-  // Hardware identity comes from the connected controller, not a settings file.
-  delete o.hardwareVariant;
   // truncate all controllers to length $length;
   const controllerCount = deviceForId(config.deviceId).controlCount;
 
@@ -172,9 +170,7 @@ export const updateFromJson = (
   json: ControllerConfiguration,
 ) => {
   Object.keys(json).forEach((key) => {
-    if (key !== "hardwareVariant") {
-      config[key] = json[key];
-    }
+    config[key] = json[key];
   });
 
   return config;
@@ -208,6 +204,20 @@ export const currentBankFromSysexArray = (data: number[]) => {
   }
 };
 
+// Most devices are named by their device ID alone; a processor only implements
+// displayNameFromSysexArray if it can't be (the 8mu reports one ID for two
+// hardware revisions).
+export const displayNameFromSysexArray = (data: number[]): string => {
+  const device = deviceForId(data[5]);
+
+  const processor = getProcessorForDevice(device);
+  if (processor.displayNameFromSysexArray !== undefined) {
+    return processor.displayNameFromSysexArray(data);
+  }
+
+  return device.name;
+};
+
 export const deviceForId = (id: number) => allKnownDevices[id];
 
 export const isUnsupportedLegacy8mu = (
@@ -220,16 +230,6 @@ export const isUnsupportedLegacy8mu = (
     lt(firmwareVersion, "1.5.0") &&
     midiPortNames.some((name) => /8mu/i.test(name))
   );
-};
-
-export const displayNameForConfiguration = (
-  config: ControllerConfiguration,
-): string => {
-  if (config.deviceId === 6) {
-    return config.hardwareVariant === "samd21" ? "8mu v1" : "8mu v2";
-  }
-
-  return deviceForId(config.deviceId).name;
 };
 
 export const deviceHasCapability = (

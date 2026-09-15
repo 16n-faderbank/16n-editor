@@ -47,12 +47,14 @@
       listenForSysex(midiState.selectedInput);
       listenForNotes(midiState.selectedInput);
       configuration.current = null;
+      configuration.deviceName = null;
       configuration.unsupportedDevice = null;
       doRequestConfig();
     }
 
     if (midiState.selectedOutput) {
       configuration.current = null;
+      configuration.deviceName = null;
       configuration.unsupportedDevice = null;
       doRequestConfig();
     }

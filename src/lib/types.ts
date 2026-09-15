@@ -27,7 +27,6 @@ export type ControllerConfiguration = {
   faderMax?: number;
   trsMode?: number;
   firmwareVersion: string;
-  hardwareVariant?: "samd21" | "rp2040";
   usbControls: Control[];
   trsControls: Control[];
   usbButtonControls?: ButtonControl[];
