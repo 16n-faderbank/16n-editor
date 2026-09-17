@@ -19,6 +19,8 @@ The result is a little more readable by most JS developers, and we gain a lot of
 
 Version 2.1.0 of the editor brings the project up to Svelte 5, and adds support for 14-bit MIDI CCs if the device has appropriate firmware.
 
+Version 2.3.0 of the editor brings support for 8mu-family devices (with appropriate firmware, and fixes issues with 14-bit mode on Teensy-LC based devices.
+
 ## Build Requirements
 
 - Node.js v22+ (LTS)
