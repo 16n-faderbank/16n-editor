@@ -1,4 +1,4 @@
-import { gte } from "semver";
+import { gte, lt } from "semver";
 
 import { logger } from "$lib/logger";
 import allKnownDevices from "./devices.json";
@@ -126,8 +126,8 @@ export const toUSBOptionsSysexArray = (config: ControllerConfiguration) => {
 
   const device = deviceForId(config.deviceId);
   if (deviceHasCapability(device, "highResolution", config.firmwareVersion)) {
-     const highres = fullArray.slice(84, 87);
-     return channels.concat(ccs).concat(highres);
+    const highres = fullArray.slice(84, 87);
+    return channels.concat(ccs).concat(highres);
   }
 
   return channels.concat(ccs);
@@ -140,8 +140,8 @@ export const toTRSOptionsSysexArray = (config: ControllerConfiguration) => {
 
   const device = deviceForId(config.deviceId);
   if (deviceHasCapability(device, "highResolution", config.firmwareVersion)) {
-     const highres = fullArray.slice(87, 90);
-     return channels.concat(ccs).concat(highres);
+    const highres = fullArray.slice(87, 90);
+    return channels.concat(ccs).concat(highres);
   }
 
   return channels.concat(ccs);
@@ -218,7 +218,33 @@ export const currentBankFromSysexArray = (data: number[]) => {
   }
 };
 
+// Most devices are named by their device ID alone; a processor only implements
+// displayNameFromSysexArray if it can't be (the 8mu reports one ID for two
+// hardware revisions).
+export const displayNameFromSysexArray = (data: number[]): string => {
+  const device = deviceForId(data[5]);
+
+  const processor = getProcessorForDevice(device);
+  if (processor.displayNameFromSysexArray !== undefined) {
+    return processor.displayNameFromSysexArray(data);
+  }
+
+  return device.name;
+};
+
 export const deviceForId = (id: number) => allKnownDevices[id];
+
+export const isUnsupportedLegacy8mu = (
+  deviceId: number,
+  firmwareVersion: string,
+  midiPortNames: string[],
+): boolean => {
+  return (
+    deviceId === 4 &&
+    lt(firmwareVersion, "1.5.0") &&
+    midiPortNames.some((name) => /8mu/i.test(name))
+  );
+};
 
 export const deviceHasCapability = (
   device: Device,

@@ -1,6 +1,6 @@
 # 16n editor
 
-The 16n editor allows you to edit the configuration of your 16n from within a web browser. It supports 16ns running firmware **2.0.0** and up.
+The 16n editor allows you to edit the configuration of supported 16n-family and 8mu controllers from within a web browser.
 
 The 16n editor is a Javascript app based around [SvelteKit](sk).
 
@@ -19,6 +19,8 @@ The result is a little more readable by most JS developers, and we gain a lot of
 
 Version 2.1.0 of the editor brings the project up to Svelte 5, and adds support for 14-bit MIDI CCs if the device has appropriate firmware.
 
+Version 2.3.0 of the editor brings support for 8mu-family devices (with appropriate firmware, and fixes issues with 14-bit mode on Teensy-LC based devices.
+
 ## Build Requirements
 
 - Node.js v22+ (LTS)
@@ -27,7 +29,8 @@ Version 2.1.0 of the editor brings the project up to Svelte 5, and adds support 
 ## Usage Requirements
 
 - As a WebMIDI app, you need a client that can support it. That basically means Chrome right now.
-- A 16n running firmware v2.0.0 or higher, or a 16nx running firmware v3.0.0 or higher
+- A 16n running firmware v2.0.0 or higher, a 16nx/16rx running firmware v3.0.0 or higher, an RP2040 8mu v2, or a SAMD21 8mu v1 running firmware v1.5.0 or higher.
+- Earlier SAMD21 8mu firmware must be [updated](https://github.com/TomWhitwell/Smith-Kakehashi/releases) before using this editor.
 
 ## Installation
 
@@ -88,6 +91,7 @@ We previously used Svelte Stores to store state and react to state change; as of
 Inside the `configuration` stateful object, exported by `src/lib/state/configuration.svelte.ts`, there are a few key sub-objects:
 
 - `configuration.current` describes the current Configuration being shown in Viewing mode.
+- `configuration.unsupportedDevice` describes a recognised controller that is deliberately blocked until its firmware is updated.
 - `configuration.controllerMightNeedFactoryReset` represents if the current 16n isn't quite configured right.
 - `configuration.editing` is the current configuration being _edited_ in Editing mode.
 - `configuration.editMode` is a boolean representing if the editor is in Editing mode or not.

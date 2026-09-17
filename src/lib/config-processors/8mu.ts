@@ -5,6 +5,17 @@ import { parseFirmwareVersion } from "./shared";
  * Config processor for 8mu2040 devices
  */
 
+// 8mu v1 firmware writes "SAMD" into four bytes that are reserved in the
+// existing 8mu configuration response. Shipped RP2040 units leave them zero.
+// The protocol device ID remains 6 for backward and Radio Music compatibility.
+const SAMD_SIGNATURE = [0x53, 0x41, 0x4d, 0x44];
+
+const isSamd21 = (data: number[]): boolean =>
+  SAMD_SIGNATURE.every((value, index) => data[18 + index] === value);
+
+export const displayNameFromSysexArray = (data: number[]): string =>
+  isSamd21(data) ? "8mu v1" : "8mu v2";
+
 export const configFromSysexArray = (
   data: number[],
   device: Device,

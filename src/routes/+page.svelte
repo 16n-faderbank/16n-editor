@@ -47,11 +47,15 @@
       listenForSysex(midiState.selectedInput);
       listenForNotes(midiState.selectedInput);
       configuration.current = null;
+      configuration.deviceName = null;
+      configuration.unsupportedDevice = null;
       doRequestConfig();
     }
 
     if (midiState.selectedOutput) {
       configuration.current = null;
+      configuration.deviceName = null;
+      configuration.unsupportedDevice = null;
       doRequestConfig();
     }
   });
@@ -63,6 +67,9 @@
   };
 
   let productName = $derived.by(() => {
+    if (configuration.unsupportedDevice?.name.startsWith("8mu")) {
+      return "8mu";
+    }
     if (configuration.current) {
       const device = deviceForId(configuration.current.deviceId);
       return device.name.startsWith("8mu") ? "8mu" : "16n";
@@ -79,7 +86,24 @@
 
   <div id="inner">
     {#if midiState.webMidiEnabled}
-      {#if configuration.current}
+      {#if configuration.unsupportedDevice}
+        <div class="notice">
+          <p>
+            <strong>
+              This 8mu v1 firmware is too old for the 16n Editor.
+            </strong>
+          </p>
+          <p>
+            Firmware 1.5.0 or later is required. Update your 8mu, then reconnect
+            it.
+          </p>
+          <p>
+            <a href="https://github.com/TomWhitwell/Smith-Kakehashi/releases">
+              Download 8mu firmware
+            </a>
+          </p>
+        </div>
+      {:else if configuration.current}
         {#if configuration.controllerMightNeedFactoryReset && semverGte(configuration.current.firmwareVersion, "2.1.0")}
           <!-- webmidi enabled, config not receiving, despite having a firmware that should work -->
           <div class="notice">

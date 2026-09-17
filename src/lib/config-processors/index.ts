@@ -15,6 +15,8 @@ export interface ConfigProcessor {
 
   currentBankFromSysexArray?: (data: number[]) => number;
 
+  displayNameFromSysexArray?: (data: number[]) => string;
+
   toSysexArray: (config: ControllerConfiguration, device: Device) => number[];
 }
 
