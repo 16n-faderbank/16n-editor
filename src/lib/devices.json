@@ -91,6 +91,7 @@
       "ʎɐʍ sᴉɥʇ",
       "this way"
     ],
-    "buttonControlLabels": ["Button A", "Button B", "Button C", "Button D"]
+    "buttonControlLabels": ["Button A", "Button B", "Button C", "Button D"],
+    "firmwareUrl": "https://github.com/TomWhitwell/8mu_Public/tree/main/Releases"
   }
 ]
