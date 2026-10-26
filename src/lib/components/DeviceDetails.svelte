@@ -38,7 +38,6 @@
 
 {#if midiState.webMidiEnabled}
   <div class="details">
-    <!-- <MidiSelector /> -->
     {#if configuration.unsupportedDevice}
       <p class="device">
         Unsupported: <strong>{configuration.unsupportedDevice.name}</strong>
