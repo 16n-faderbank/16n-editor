@@ -22,8 +22,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.13.0)
       '@sveltejs/adapter-static':
-        specifier: ^3.0.10
-        version: 3.0.10(@sveltejs/kit@2.70.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.57.3(@typescript-eslint/types@8.72.1))(vite@6.4.5))(svelte@5.57.3(@typescript-eslint/types@8.72.1))(typescript@5.9.3)(vite@6.4.5))
+        specifier: ^3.0.11
+        version: 3.0.11(@sveltejs/kit@2.70.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.57.3(@typescript-eslint/types@8.72.1))(vite@6.4.5))(svelte@5.57.3(@typescript-eslint/types@8.72.1))(typescript@5.9.3)(vite@6.4.5))
       '@sveltejs/kit':
         specifier: ^2.70.3
         version: 2.70.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.57.3(@typescript-eslint/types@8.72.1))(vite@6.4.5))(svelte@5.57.3(@typescript-eslint/types@8.72.1))(typescript@5.9.3)(vite@6.4.5)
@@ -479,8 +479,8 @@ packages:
     peerDependencies:
       acorn: ^8.9.0
 
-  '@sveltejs/adapter-static@3.0.10':
-    resolution: {integrity: sha512-7D9lYFWJmB7zxZyTE/qxjksvMqzMuYrrsyh1f4AlZqeZeACPRySjbC3aFiY55wb1tWUaKOQG9PVbm74JcN2Iew==}
+  '@sveltejs/adapter-static@3.0.11':
+    resolution: {integrity: sha512-DyX1bWx9uiPxzq7Mr+jnxqY+w3UhE3pYy5D1LcfdS++2KZTHSZBD60BoP44LjVgtGILfeOQCF8ESqzmLVrz4Ng==}
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
 
@@ -1462,7 +1462,7 @@ snapshots:
     dependencies:
       acorn: 8.19.0
 
-  '@sveltejs/adapter-static@3.0.10(@sveltejs/kit@2.70.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.57.3(@typescript-eslint/types@8.72.1))(vite@6.4.5))(svelte@5.57.3(@typescript-eslint/types@8.72.1))(typescript@5.9.3)(vite@6.4.5))':
+  '@sveltejs/adapter-static@3.0.11(@sveltejs/kit@2.70.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.57.3(@typescript-eslint/types@8.72.1))(vite@6.4.5))(svelte@5.57.3(@typescript-eslint/types@8.72.1))(typescript@5.9.3)(vite@6.4.5))':
     dependencies:
       '@sveltejs/kit': 2.70.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.57.3(@typescript-eslint/types@8.72.1))(vite@6.4.5))(svelte@5.57.3(@typescript-eslint/types@8.72.1))(typescript@5.9.3)(vite@6.4.5)
 
